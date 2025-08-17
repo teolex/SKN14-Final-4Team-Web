@@ -5,7 +5,6 @@
 {% block title %}Vogue Me || Login{% endblock title %}
 
 {% block style %}
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="{% static "userapp/css/login.css" %}">
 {% endblock style %}
 
@@ -26,7 +25,11 @@
             <button type="submit" class="btn btn-primary w-100">로그인</button>
         </form>
 
-        <p class="mt-4 mb-3 text-muted">또는 SNS 계정으로 로그인</p>
+        <div class="mt-3">
+            <small>계정이 없으신가요? <a href="{% url 'userapp:signup' %}">회원가입</a></small>
+        </div>
+
+        <p class="mt-4 text-muted">또는 SNS 계정으로 로그인</p>
 
         <!-- SNS 로그인 버튼 -->
         <div class="sns-login-row">

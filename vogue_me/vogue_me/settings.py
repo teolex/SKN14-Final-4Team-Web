@@ -114,7 +114,7 @@ TIME_ZONE = 'Asia/Seoul'
 
 USE_I18N = True
 
-USE_TZ = True
+USE_TZ = False
 
 
 # Static files (CSS, JavaScript, Images)
@@ -152,5 +152,5 @@ EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'  # Or your SMTP host
 EMAIL_PORT = 465  # Or your SMTP port (e.g., 465 for SSL)
 EMAIL_USE_SSL = True
-EMAIL_HOST_USER = 'Vogue Me<team4.skn14@gmail.com>'
+EMAIL_HOST_USER = 'team4.skn14@gmail.com'
 EMAIL_HOST_PASSWORD = 'wyaq ydxk uozi bqgx' # Use an App Password for Gmail
