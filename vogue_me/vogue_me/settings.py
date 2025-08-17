@@ -38,7 +38,9 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
+    "mainapp",
     "userapp",
+    "mailapp",
 ]
 
 MIDDLEWARE = [
@@ -143,3 +145,12 @@ MEDIA_ROOT = BASE_DIR / "media"
 # 로그인 성공한 후의 리다이렉트 URL ( 기본값 = /accounts/profile )
 # LOGIN_REDIRECT_URL = '/qna/'
 LOGIN_REDIRECT_URL = '/main/'
+
+
+#TODO 이 환경변수들은 !!반드시!! 숨겨져야 합니다.
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'  # Or your SMTP host
+EMAIL_PORT = 465  # Or your SMTP port (e.g., 465 for SSL)
+EMAIL_USE_SSL = True
+EMAIL_HOST_USER = 'Vogue Me<team4.skn14@gmail.com>'
+EMAIL_HOST_PASSWORD = 'wyaq ydxk uozi bqgx' # Use an App Password for Gmail
