@@ -33,10 +33,10 @@
 
         <!-- SNS 로그인 버튼 -->
         <div class="sns-login-row">
-            <button class="btn sns-login-btn"><i class="fab fa-instagram"></i></button>
-            <button class="btn sns-login-btn"><i class="fab fa-twitter"></i></button>
-            <button class="btn sns-login-btn"><i class="fab fa-tiktok"></i></button>
-            <button class="btn sns-login-btn"><i class="fab fa-facebook-f"></i></button>
+{#            <button class="btn sns-login-btn"><i class="fab fa-instagram"></i></button>#}
+{#            <button class="btn sns-login-btn"><i class="fab fa-twitter"></i></button>#}
+{#            <button class="btn sns-login-btn"><i class="fab fa-tiktok"></i></button>#}
+{#            <button class="btn sns-login-btn"><i class="fab fa-facebook-f"></i></button>#}
             <button class="btn sns-login-btn"><i class="fab fa-google"></i></button>
         </div>
 
@@ -46,3 +46,10 @@
         </div>
     </div>
 {% endblock %}
+
+{% block script %}
+    <script>
+        const GOOGLE_CLIENT_ID = "{{ GOOGLE_CLIENT_ID }}";
+    </script>
+    <script src="{% static "userapp/js/login.js" %}"></script>
+{% endblock script %}

@@ -24,10 +24,11 @@ urlpatterns = [
     # path('login/', auth_views.LoginView.as_view(template_name="app/userapp/login.html"), name="login"),
 
     path('login/', v.login, name="login"),
+    path('sns_login/<str:provider>', v.sns_login, name="sns_login"),
     path('pick_style/', v.pick_style, name="pick_style"),
-    path('make_avatar/', v.make_avatar, name="make_avatar"),
 
     path('signup/', v.signup, name="signup"),
     path('check_email', v.check_email_dup, name="check_email_dup"),
     path('verify/<str:encrypted_code>', v.verify_auth_link, name="verify_auth_link"),
+
 ]

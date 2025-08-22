@@ -1,11 +1,17 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
+from django.db import models
+
+
+# class Member(models.Model):
+    # 본인인증 여부
+    # 회원가입한 sns 종류
 
 
 # Create your models here.
 class RegisterUserForm(UserCreationForm):
-    email = forms.EmailField(required=True)
+    email = forms.EmailField(required=True)     # User 의 email 속성을 덮어쓰기 위해 선언
 
     class Meta:
         model  = User
