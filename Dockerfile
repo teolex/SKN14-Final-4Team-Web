@@ -5,7 +5,7 @@ FROM python:3.12
 WORKDIR /app
 
 # 의존성 복사
-COPY vogue_me/requirements.txt .
+COPY requirements.txt .
 
 # 의존성 설치
 RUN pip install --no-cache-dir -r requirements.txt
