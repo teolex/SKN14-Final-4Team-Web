@@ -22,6 +22,6 @@ EXPOSE 8000
 # 이게 운영용
 
 # collectstatic 를 넣으면 build 단계부터 안됨...
-RUN python manage.py collectstatic --noinput
+#RUN python manage.py collectstatic --noinput
 
 CMD ["gunicorn", "vogue_me.wsgi:application", "--bind", "0.0.0.0:8000"]
