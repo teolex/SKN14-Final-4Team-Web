@@ -11,8 +11,9 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 
 import os
-from dotenv import load_dotenv
 from pathlib import Path
+
+from dotenv import load_dotenv
 
 load_dotenv()
 
@@ -154,3 +155,10 @@ LOGIN_REDIRECT_URL = '/main/'
 
 GOOGLE_CLIENT_ID     = "342938321475-m4385u4fem0ogd8jjr98bqdgdqk6q3j2.apps.googleusercontent.com"
 GOOGLE_CLIENT_SECRET = os.getenv('GOOGLE_CLIENT_SECRET')
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'  # Or your SMTP host
+EMAIL_PORT = 465  # Or your SMTP port (e.g., 465 for SSL)
+EMAIL_USE_SSL = True
+EMAIL_HOST_USER = os.getenv("EMAIL_HOST_USER")
+EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD")

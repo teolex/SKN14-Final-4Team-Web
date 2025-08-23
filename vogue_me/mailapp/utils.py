@@ -25,9 +25,3 @@ def send_mail(to, title, content:str) -> None:
 def send_mail_with(to, title, form:MailForm, context:dict=None) -> None:
     content = render_to_string(form.value, context)
     send_mail(to, title, content)
-
-
-############################################################
-if __name__ == "__main__":
-    html_content = render_to_string('mailform/login_otp.html', {'otp_code': "123ABC"})
-    send_mail("ubangbang@naver.com", "보내보자 이메일", html_content)
