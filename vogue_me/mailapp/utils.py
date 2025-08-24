@@ -10,7 +10,7 @@ class MailForm(Enum):
     LOGIN_OTP   = "mailform/login_otp.html"
     AUTH_LINK   = "mailform/register_auth_link.html"
 
-############################################################
+
 def send_mail(to, title, content:str) -> None:
     if not to:      raise ValueError("no_receiver_address")
     if not title:   raise ValueError("no_email_subject")
@@ -21,10 +21,7 @@ def send_mail(to, title, content:str) -> None:
     email.content_subtype = "html"
     email.send()
 
+
 def send_mail_with(to, title, form:MailForm, context:dict=None) -> None:
     content = render_to_string(form.value, context)
     send_mail(to, title, content)
-
-if __name__ == "__main__":
-    html_content = render_to_string('mailform/login_otp.html', {'otp_code': "123ABC"})
-    send_mail("ubangbang@naver.com", "보내보자 이메일", html_content)

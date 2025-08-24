@@ -14,9 +14,14 @@
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
         <link rel="stylesheet" href="{% static 'css/global.css' %}">
 
-        {# Upper script 블럭 ###########################################}
+        {# Backend message script #######################################}
+        {% include "layout/alert_msg.html" %}
+        {# Global javascript variables 블럭 #############################}
+        {% include "layout/global_variables.html" %}
+
+        {# Upper script 블럭 ############################################}
         {% block upper_script %}{% endblock upper_script %}
-        {# Style 블럭 ##################################################}
+        {# Style 블럭 ###################################################}
         {% block style %}{% endblock style %}
     </head>
     <body>

@@ -10,7 +10,12 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 
+import os
 from pathlib import Path
+
+from dotenv import load_dotenv
+
+load_dotenv()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -25,7 +30,8 @@ SECRET_KEY = 'django-insecure--b1q6+ymklxs)n#iqm5jlspl@=k-5$!r1hft=2_%nj27xbf!n3
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOST = os.getenv('ALLOWED_HOST')
+ALLOWED_HOSTS = [ALLOWED_HOST, "127.0.0.1"]
 
 
 # Application definition
@@ -147,10 +153,12 @@ MEDIA_ROOT = BASE_DIR / "media"
 LOGIN_REDIRECT_URL = '/main/'
 
 
-#TODO 이 환경변수들은 !!반드시!! 숨겨져야 합니다.
+GOOGLE_CLIENT_ID     = "342938321475-m4385u4fem0ogd8jjr98bqdgdqk6q3j2.apps.googleusercontent.com"
+GOOGLE_CLIENT_SECRET = os.getenv('GOOGLE_CLIENT_SECRET')
+
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'  # Or your SMTP host
 EMAIL_PORT = 465  # Or your SMTP port (e.g., 465 for SSL)
 EMAIL_USE_SSL = True
-EMAIL_HOST_USER = 'team4.skn14@gmail.com'
-EMAIL_HOST_PASSWORD = 'wyaq ydxk uozi bqgx' # Use an App Password for Gmail
+EMAIL_HOST_USER = os.getenv("EMAIL_HOST_USER")
+EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD")

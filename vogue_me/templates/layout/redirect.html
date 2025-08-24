@@ -1,0 +1,13 @@
+<script>
+    {% if msg %}
+        alert("{{ msg }}");
+    {% endif %}
+
+    {% if redirect %}
+        {% if redirect == ":BACK" %}
+            history.back();
+        {% else %}
+            location.href = "{{ redirect }}";
+        {% endif %}
+    {% endif %}
+</script>
