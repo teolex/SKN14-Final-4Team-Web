@@ -43,6 +43,8 @@ _login_view = CustomLoginView.as_view(
     template_name="app/userapp/login.html",
     extra_context={
         "GOOGLE_CLIENT_ID"  : settings.GOOGLE_CLIENT_ID,
+        "KAKAO_CLIENT_ID"   : settings.KAKAO_CLIENT_ID,
+        "NAVER_CLIENT_ID"   : settings.NAVER_CLIENT_ID,
     }
 )
 

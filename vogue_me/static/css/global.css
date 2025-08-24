@@ -1,10 +1,14 @@
+:root {
+    --color-1: #ccabd8;
+    --color-2: #8474a1;
+    --color-3: #6ec6ca;
+    --color-4: #08979d;
+    --color-5: #055b5c;
+}
+
 body {
     background: linear-gradient(135deg, #ccabd8, #8474a1, #6ec6ca, #08979d);
     min-height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
     font-family: Arial, sans-serif;
-    color: #055b5c;
     position: relative;
 }
