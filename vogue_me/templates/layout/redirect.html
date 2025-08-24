@@ -6,6 +6,9 @@
     {% if redirect %}
         {% if redirect == ":BACK" %}
             history.back();
+        {% elif redirect == ":CLOSE" %}
+            self.close();
+            window.close();
         {% else %}
             location.href = "{{ redirect }}";
         {% endif %}

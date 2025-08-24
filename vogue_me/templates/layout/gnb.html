@@ -1,0 +1,83 @@
+<nav class="navbar navbar-expand-lg navbar-dark sticky-top">
+    <div class="container-fluid">
+        <a class="navbar-brand d-flex align-items-center" href="#">
+            <!-- Logo -->
+            <img src="https://placehold.co/100x40/08979d/ffffff?text=LOGO" alt="Logo" class="rounded">
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse justify-content-between" id="navbarNav">
+            <!-- Left-aligned navigation links -->
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <li class="nav-item">
+                    <a class="nav-link active" aria-current="page" href="/">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="javascript:;">Guide</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="javascript:;">Board</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="javascript:;">Contact Us</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url "mainapp:our_team" %}">Our Team</a>
+                </li>
+            </ul>
+
+            {% if user.is_authenticated %}
+                <!-- Profile with popup -->
+                <div class="profile-img-container position-relative me-3">
+                        <div class="img-box">
+                            <img id="profile-btn" src="https://placehold.co/40x40/6ec6ca/ffffff?text=U" alt="Profile">
+                        </div>
+                        <div id="profile-popup" class="profile-popup shadow active">
+                            <div class="user-info">
+                                <div class="img-box">
+                                    <img src="{{ user.member.photo_url }}" alt="User Profile">
+                                </div>
+                                <div>
+                                    <h6 class="mb-0">{{ user.first_name }} {{ user.last_name }}</h6>
+                                    <p class="mb-0 text-muted" style="font-size: 0.875rem;">{{ user.username }}</p>
+                                </div>
+                            </div>
+                            <hr>
+                            <div class="btn-group">
+                                <button type="button" class="btn btn-primary" style="background-color: var(--color-4); border-color: var(--color-4);">My Page</button>
+                                <button type="button" class="btn btn-secondary" style="background-color: var(--color-2); border-color: var(--color-2);">Logout</button>
+                            </div>
+                        </div>
+
+                </div>
+            {% else %}
+                <div class="user-info">
+                    <a href="/user/login" class="btn" style="color:white;">Sign in</a>
+                    <a href="/user/signup" class="btn btn-secondary" style="background-color: var(--color-2); border-color: var(--color-2);">Sign up</a>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</nav>
+
+{% if user.is_authenticated %}
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const profileBtn = document.getElementById('profile-btn');
+            const profilePopup = document.getElementById('profile-popup');
+
+            profileBtn.addEventListener('click', (event) => {
+                profilePopup.classList.toggle('active');
+                event.stopPropagation();
+            });
+
+            // Close popup when clicking outside
+            document.addEventListener('click', (event) => {
+                if (!profilePopup.contains(event.target) && !profileBtn.contains(event.target)) {
+                    profilePopup.classList.remove('active');
+                }
+            });
+        });
+    </script>
+{%  endif %}

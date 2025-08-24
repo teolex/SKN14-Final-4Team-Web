@@ -1,19 +1,150 @@
-{% extends "layout/base_content_only.html" %}
+{% extends "layout/base_content_with_gnb.html" %}
 
 {% load static %}
-
 
 {% block title %}Vogue Me || Welcome!{% endblock title %}
 
 
 {% block style %}
+    <link rel="stylesheet" href="{% static 'css/index.css' %}">
 {% endblock style %}
 
 
 {% block content %}
-    <h1>Welcome to Index page</h1>
-{% endblock %}
+    <!-- Main Carousel -->
+    <div id="mainCarousel" class="carousel slide" data-bs-ride="carousel">
+        <div class="carousel-indicators">
+            <button type="button" data-bs-target="#mainCarousel" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+            <button type="button" data-bs-target="#mainCarousel" data-bs-slide-to="1" aria-label="Slide 2"></button>
+            <button type="button" data-bs-target="#mainCarousel" data-bs-slide-to="2" aria-label="Slide 3"></button>
+        </div>
+        <div class="carousel-inner">
+            <div class="carousel-item active" style="background-image: url('https://placehold.co/1920x1080/ccabd8/000000?text=Slide+1');">
+                <!-- Removed d-none d-md-block to show on mobile -->
+                <div class="carousel-caption">
+                    <h5>First slide label</h5>
+                    <p>Some representative placeholder content for the first slide.</p>
+                </div>
+            </div>
+            <div class="carousel-item" style="background-image: url('https://placehold.co/1920x1080/8474a1/000000?text=Slide+2');">
+                <!-- Removed d-none d-md-block to show on mobile -->
+                <div class="carousel-caption">
+                    <h5>Second slide label</h5>
+                    <p>Some representative placeholder content for the second slide.</p>
+                </div>
+            </div>
+            <div class="carousel-item" style="background-image: url('https://placehold.co/1920x1080/6ec6ca/000000?text=Slide+3');">
+                <!-- Removed d-none d-md-block to show on mobile -->
+                <div class="carousel-caption">
+                    <h5>Third slide label</h5>
+                    <p>Some representative placeholder content for the third slide.</p>
+                </div>
+            </div>
+        </div>
+        <button class="carousel-control-prev" type="button" data-bs-target="#mainCarousel" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Previous</span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#mainCarousel" data-bs-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Next</span>
+        </button>
+    </div>
+
+    <!-- Article Cards Carousel -->
+    <div class="article-carousel">
+        <div class="article-carousel-wrapper">
+            <!-- Duplicate cards for infinite loop effect -->
+            <div class="d-inline-flex flex-nowrap">
+                <div class="article-card">
+                    <img src="https://placehold.co/250x150/08979d/ffffff?text=Image+1" alt="Article Image 1">
+                    <div class="article-card-body">
+                        <h5 class="article-card-title">Article Title 1</h5>
+                        <p class="article-card-text">Short description of the article content goes here.</p>
+                        <p class="article-card-date">2023.10.27</p>
+                    </div>
+                </div>
+                <div class="article-card">
+                    <img src="https://placehold.co/250x150/055b5c/ffffff?text=Image+2" alt="Article Image 2">
+                    <div class="article-card-body">
+                        <h5 class="article-card-title">Article Title 2</h5>
+                        <p class="article-card-text">Short description of the article content goes here.</p>
+                        <p class="article-card-date">2023.10.26</p>
+                    </div>
+                </div>
+                <div class="article-card">
+                    <img src="https://placehold.co/250x150/ccabd8/ffffff?text=Image+3" alt="Article Image 3">
+                    <div class="article-card-body">
+                        <h5 class="article-card-title">Article Title 3</h5>
+                        <p class="article-card-text">Short description of the article content goes here.</p>
+                        <p class="article-card-date">2023.10.25</p>
+                    </div>
+                </div>
+                <div class="article-card">
+                    <img src="https://placehold.co/250x150/8474a1/ffffff?text=Image+4" alt="Article Image 4">
+                    <div class="article-card-body">
+                        <h5 class="article-card-title">Article Title 4</h5>
+                        <p class="article-card-text">Short description of the article content goes here.</p>
+                        <p class="article-card-date">2023.10.24</p>
+                    </div>
+                </div>
+                <div class="article-card">
+                    <img src="https://placehold.co/250x150/6ec6ca/ffffff?text=Image+5" alt="Article Image 5">
+                    <div class="article-card-body">
+                        <h5 class="article-card-title">Article Title 5</h5>
+                        <p class="article-card-text">Short description of the article content goes here.</p>
+                        <p class="article-card-date">2023.10.23</p>
+                    </div>
+                </div>
+                <!-- Duplicates to create seamless loop -->
+                <div class="article-card">
+                    <img src="https://placehold.co/250x150/08979d/ffffff?text=Image+1" alt="Article Image 1">
+                    <div class="article-card-body">
+                        <h5 class="article-card-title">Article Title 1</h5>
+                        <p class="article-card-text">Short description of the article content goes here.</p>
+                        <p class="article-card-date">2023.10.27</p>
+                    </div>
+                </div>
+                <div class="article-card">
+                    <img src="https://placehold.co/250x150/055b5c/ffffff?text=Image+2" alt="Article Image 2">
+                    <div class="article-card-body">
+                        <h5 class="article-card-title">Article Title 2</h5>
+                        <p class="article-card-text">Short description of the article content goes here.</p>
+                        <p class="article-card-date">2023.10.26</p>
+                    </div>
+                </div>
+                <div class="article-card">
+                    <img src="https://placehold.co/250x150/ccabd8/ffffff?text=Image+3" alt="Article Image 3">
+                    <div class="article-card-body">
+                        <h5 class="article-card-title">Article Title 3</h5>
+                        <p class="article-card-text">Short description of the article content goes here.</p>
+                        <p class="article-card-date">2023.10.25</p>
+                    </div>
+                </div>
+                <div class="article-card">
+                    <img src="https://placehold.co/250x150/8474a1/ffffff?text=Image+4" alt="Article Image 4">
+                    <div class="article-card-body">
+                        <h5 class="article-card-title">Article Title 4</h5>
+                        <p class="article-card-text">Short description of the article content goes here.</p>
+                        <p class="article-card-date">2023.10.24</p>
+                    </div>
+                </div>
+                <div class="article-card">
+                    <img src="https://placehold.co/250x150/6ec6ca/ffffff?text=Image+5" alt="Article Image 5">
+                    <div class="article-card-body">
+                        <h5 class="article-card-title">Article Title 5</h5>
+                        <p class="article-card-text">Short description of the article content goes here.</p>
+                        <p class="article-card-date">2023.10.23</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {% include "layout/footer.html" %}
+{% endblock content %}
 
 
 {% block script %}
+
 {% endblock script %}
