@@ -5,9 +5,9 @@ from django.http import JsonResponse, HttpResponse
 from django.shortcuts import render, redirect
 
 from mailapp.models import *
-from sns_login.google import Google
-from sns_login.kakao import Kakao
-from sns_login.naver import Naver
+from .sns_login.google import Google
+from .sns_login.kakao import Kakao
+from .sns_login.naver import Naver
 from .models import RegisterUserForm, Member
 
 google = Google()
