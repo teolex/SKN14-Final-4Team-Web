@@ -1,6 +1,8 @@
 import requests
+from django.contrib.auth.models import User
 from django.db import transaction
 from django.shortcuts import render, redirect
+from django.urls import reverse
 
 from mailapp.models import *
 from userapp.models import Member
@@ -28,7 +30,8 @@ class SnsLogin:
         return token
 
     def get_json_response(self, url, params=None, headers=None):
-        response = requests.get(url, params, headers=headers)
+        # response = requests.get(url, params, headers=headers)
+        response = requests.post(url, data=params, headers=headers)
         response.raise_for_status()
         return response.json()
 

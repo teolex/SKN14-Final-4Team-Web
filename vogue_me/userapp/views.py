@@ -1,8 +1,10 @@
 import json
 
+from django.contrib.auth.models import User
 from django.db import transaction
 from django.http import JsonResponse, HttpResponse
 from django.shortcuts import render, redirect
+from django.urls import reverse
 
 from mailapp.models import *
 from .sns_login.google import Google
