@@ -1,4 +1,4 @@
-name: Django CICD App
+name: sustainable_people CI/CD
 
 on:
   pull_request_target:
@@ -14,16 +14,21 @@ jobs:
     if: github.event.pull_request.merged == true
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout source code
+      - name: ✅ Checkout Repository
         uses: actions/checkout@v2
 
-      - name: Login to Docker hub
+      - name: 🐍 Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: 3.12
+
+      - name: 🔑 Log in to Docker Hub
         uses: docker/login-action@v1
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      - name: Docker build and push
+      - name: 🏗️ Build and Push Docker images
         uses: docker/build-push-action@v2
         with:
           context: ./vogue_me
@@ -31,7 +36,7 @@ jobs:
           push: true
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/${{ secrets.DOCKER_IMAGENAME }}:latest
 
-      - name: Beanstalk Deploy
+      - name: 🚀 Deploy Beanstalk
         uses: einaregilsson/beanstalk-deploy@v20
         with:
           aws_access_key: ${{ secrets.AWS_ACCESS_KEY_ID }}
