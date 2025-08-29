@@ -11,8 +11,9 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 
 import os
-from dotenv import load_dotenv
 from pathlib import Path
+
+from dotenv import load_dotenv
 
 load_dotenv()
 
@@ -29,8 +30,8 @@ SECRET_KEY = 'django-insecure--b1q6+ymklxs)n#iqm5jlspl@=k-5$!r1hft=2_%nj27xbf!n3
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOST = os.getenv('ALLOWED_HOST')
-ALLOWED_HOSTS = [ALLOWED_HOST, "127.0.0.1"]
+ALLOWED_HOST = os.getenv('ALLOWED_HOST', "127.0.0.1")
+ALLOWED_HOSTS = [ALLOWED_HOST, "127.0.0.1", "localhost"]
 
 
 # Application definition
@@ -125,7 +126,9 @@ USE_TZ = False
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 
+AWS_STORAGE_BUCKET_NAME = os.getenv('AWS_STORAGE_BUCKET_NAME', "elasticbeanstalk-ap-northeast-2-967883357924 ")
 STATIC_URL = 'static/'
+STATIC_URL = f'https://{AWS_STORAGE_BUCKET_NAME}.s3.amazonaws.com/static/'
 STATICFILES_DIRS = [
     BASE_DIR / "static",
     # BASE_DIR / "userapp" / "static"
@@ -152,5 +155,18 @@ MEDIA_ROOT = BASE_DIR / "media"
 LOGIN_REDIRECT_URL = '/main/'
 
 
+NAVER_CLIENT_ID      = "oOGAmDASirYj7KTLf4ep"
+NAVER_CLIENT_SECRET  = os.getenv("NAVER_CLIENT_SECRET")
+
+KAKAO_CLIENT_ID      = "136499f4aaf7100f49322ab01e02eacc"
+KAKAO_CLIENT_SECRET  = os.getenv("KAKAO_CLIENT_SECRET")
+
 GOOGLE_CLIENT_ID     = "342938321475-m4385u4fem0ogd8jjr98bqdgdqk6q3j2.apps.googleusercontent.com"
 GOOGLE_CLIENT_SECRET = os.getenv('GOOGLE_CLIENT_SECRET')
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'  # Or your SMTP host
+EMAIL_PORT = 465  # Or your SMTP port (e.g., 465 for SSL)
+EMAIL_USE_SSL = True
+EMAIL_HOST_USER = os.getenv("EMAIL_HOST_USER")
+EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD")

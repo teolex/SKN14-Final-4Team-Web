@@ -1,0 +1,150 @@
+{% extends "layout/base_content_with_gnb.html" %}
+
+{% load static %}
+
+{% block title %}Vogue Me || Find your Style{% endblock title %}
+
+
+{% block style %}
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+{% endblock style %}
+
+
+{% block content %}
+    <!-- Chat Content -->
+    <div class="chat-container" id="chat-container">
+        <!-- Example Chat Messages -->
+        <div class="chat-message other">
+            <img src="https://placehold.co/40x40/8474a1/ffffff?text=상대" alt="상대 프로필" class="profile-img">
+            <div class="message-box">안녕하세요! 무엇을 도와드릴까요?</div>
+        </div>
+        <div class="chat-message user">
+            <div class="message-box">안녕하세요! 궁금한 점이 있어서 연락드렸어요.</div>
+            <img src="https://placehold.co/40x40/6ec6ca/ffffff?text=나" alt="사용자 프로필" class="profile-img">
+        </div>
+        <div class="chat-message other">
+            <img src="https://placehold.co/40x40/8474a1/ffffff?text=상대" alt="상대 프로필" class="profile-img">
+            <div class="message-box">네, 말씀해주세요. 저희 팀에 대한 정보는 <a href="https://example.com/our-team" target="_blank">여기</a>를 참고하실 수 있습니다.</div>
+        </div>
+    </div>
+
+    <!-- Chat Input Section -->
+    <div class="chat-input-container">
+        <div class="chat-input-box">
+            <textarea id="chat-input" rows="1" placeholder="메시지를 입력하세요..." oninput="autoExpand(this)"></textarea>
+            <button id="send-btn">
+                <i class="fas fa-play"></i>
+            </button>
+        </div>
+    </div>
+
+    <!-- Modal Popup for Links -->
+    <div class="modal-overlay" id="modal-overlay">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">링크 정보</h5>
+                <button type="button" class="btn-close" aria-label="Close" id="close-modal-btn"></button>
+            </div>
+            <div class="modal-body">
+                <p>이곳에 링크 내용이 표시될 예정입니다.</p>
+            </div>
+        </div>
+    </div>
+{% endblock content %}
+
+
+{% block script %}
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const chatInput = document.getElementById('chat-input');
+            const sendBtn = document.getElementById('send-btn');
+            const chatContainer = document.getElementById('chat-container');
+            const modalOverlay = document.getElementById('modal-overlay');
+            const modalContent = document.querySelector('.modal-content');
+            const closeModalBtn = document.getElementById('close-modal-btn');
+            const userProfileImgUrl = "https://placehold.co/40x40/6ec6ca/ffffff?text=나";
+            const otherProfileImgUrl = "https://placehold.co/40x40/8474a1/ffffff?text=상대";
+
+            // Function to handle automatic height adjustment of the textarea
+            function autoExpand(textarea) {
+                const minRows = 2; // Initial rows
+                const maxRows = 5; // Max rows
+
+                // Temporarily set rows to 1 to get the correct scroll height
+                textarea.rows = 1;
+                const lineHeight = parseFloat(getComputedStyle(textarea).lineHeight);
+                const numLines = Math.floor(textarea.scrollHeight / lineHeight);
+
+                // Set the number of rows, limiting to the max
+                textarea.rows = Math.min(Math.max(minRows, numLines), maxRows);
+            }
+
+            // Function to create a new chat message bubble
+            function createChatMessage(text, sender) {
+                const messageDiv = document.createElement('div');
+                messageDiv.classList.add('chat-message', sender);
+
+                let profileImgUrl = '';
+                let messageContent = '';
+
+                if (sender === 'user') {
+                    profileImgUrl = userProfileImgUrl;
+                    messageContent = `<div class="message-box">${text}</div><img src="${profileImgUrl}" alt="나의 프로필" class="profile-img">`;
+                } else { // sender === 'other'
+                    profileImgUrl = otherProfileImgUrl;
+                    messageContent = `<img src="${profileImgUrl}" alt="상대방 프로필" class="profile-img"><div class="message-box">${text}</div>`;
+                }
+
+                messageDiv.innerHTML = messageContent;
+                return messageDiv;
+            }
+
+            // Function to handle sending a message
+            function sendMessage() {
+                const messageText = chatInput.value.trim();
+                if (messageText === '') return;
+
+                // Append the new message to the chat container
+                const newMessage = createChatMessage(messageText, 'user');
+                chatContainer.appendChild(newMessage);
+
+                // Clear the input and reset its height
+                chatInput.value = '';
+                chatInput.rows = 2;
+
+                // Scroll to the bottom
+                chatContainer.scrollTop = chatContainer.scrollHeight;
+            }
+
+            // Event listeners
+            sendBtn.addEventListener('click', sendMessage);
+
+            chatInput.addEventListener('keypress', (event) => {
+                if (event.key === 'Enter' && !event.shiftKey) {
+                    event.preventDefault();
+                    sendMessage();
+                }
+            });
+
+            // Handle link clicks in chat messages
+            chatContainer.addEventListener('click', (event) => {
+                const target = event.target;
+                if (target.tagName === 'A' && target.closest('.chat-message')) {
+                    event.preventDefault();
+                    modalOverlay.classList.add('active');
+                }
+            });
+
+            // Close modal
+            closeModalBtn.addEventListener('click', () => {
+                modalOverlay.classList.remove('active');
+            });
+
+            modalOverlay.addEventListener('click', (event) => {
+                if (event.target.id === 'modal-overlay') {
+                    modalOverlay.classList.remove('active');
+                }
+            });
+        });
+    </script>
+{% endblock script %}

@@ -1,0 +1,16 @@
+<script>
+    {% if msg %}
+        alert("{{ msg }}");
+    {% endif %}
+
+    {% if redirect %}
+        {% if redirect == ":BACK" %}
+            history.back();
+        {% elif redirect == ":CLOSE" %}
+            self.close();
+            window.close();
+        {% else %}
+            location.href = "{{ redirect }}";
+        {% endif %}
+    {% endif %}
+</script>
