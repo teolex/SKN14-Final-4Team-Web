@@ -126,7 +126,9 @@ USE_TZ = False
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 
+AWS_STORAGE_BUCKET_NAME = os.getenv('AWS_STORAGE_BUCKET_NAME', "elasticbeanstalk-ap-northeast-2-967883357924 ")
 STATIC_URL = 'static/'
+STATIC_URL = f'https://{AWS_STORAGE_BUCKET_NAME}.s3.amazonaws.com/static/'
 STATICFILES_DIRS = [
     BASE_DIR / "static",
     # BASE_DIR / "userapp" / "static"
