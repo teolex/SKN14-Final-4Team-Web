@@ -16,9 +16,9 @@ RUN pip install --upgrade pip && pip install -r requirements.txt
 # 프로젝트 파일을 image 내부 WORKDIR로 복사
 COPY .. .
 
-# 정적 파일 수집
-RUN python manage.py collectstatic --noinput
+COPY entrypoint.sh /app/entrypoint.sh
+RUN chmod +x /app/entrypoint.sh
 
-# Gunicorn으로 Django 실행
-ENTRYPOINT ["gunicorn", "-c", "gunicorn.conf.py"]
+ENTRYPOINT ["/app/entrypoint.sh"]
+
 EXPOSE 8000
