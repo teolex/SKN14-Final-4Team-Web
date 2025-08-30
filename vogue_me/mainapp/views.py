@@ -3,7 +3,6 @@ from django.shortcuts import render
 
 
 def index(request):
-    print(f"{request.user.is_authenticated=}")
     return render(request, "app/mainapp/index.html")
 
 def style(request):
