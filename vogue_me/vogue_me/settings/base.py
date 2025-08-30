@@ -97,7 +97,9 @@ MEDIA_ROOT = BASE_DIR / "media"
 
 
 # 로그인 성공한 후의 리다이렉트 URL ( 기본값 = /accounts/profile )
-LOGIN_REDIRECT_URL = '/main/'
+LOGIN_URL = '/user/login'
+LOGIN_REDIRECT_URL = '/'
+LOGOUT_REDIRECT_URL = '/'
 
 
 # SNS 로그인 및 메일 발송 ###########################################

@@ -1,16 +1,16 @@
 import json
 
-from django.contrib.auth.models import User
+from django.contrib import auth
+from django.contrib.auth import login
 from django.db import transaction
 from django.http import JsonResponse, HttpResponse
 from django.shortcuts import render, redirect
-from django.urls import reverse
 
 from mailapp.models import *
+from .models import RegisterUserForm, Member
 from .sns_login.google import Google
 from .sns_login.kakao import Kakao
 from .sns_login.naver import Naver
-from .models import RegisterUserForm, Member
 
 google = Google()
 kakao  = Kakao()
@@ -23,9 +23,6 @@ def sns_login(request, provider):
 
     return HttpResponse("sns login done")
 
-def pick_style(request):
-    return render(request, "app/userapp/pick_style.html")
-
 @transaction.atomic
 def signup(request):
     if request.method == "POST":
@@ -36,8 +33,9 @@ def signup(request):
             else:
                 user = form.save()
                 LoginAuth.send_auth_mail(request, user)
-                Member.add_new_member(user=user, sns_type="email")
+                Member.add_new_member(user=user, sns_type="email", height=form.cleaned_data["height"], birthday=form.cleaned_data["birthday"])
                 return render(request, "layout/redirect.html", {"redirect":reverse("userapp:login"), "msg":"가입하신 이메일로 본인인증을 위한 메일이 발송되었습니다."})
+        form.add_error(None, '이 필드는 필수입니다.')
     else:
         form = RegisterUserForm()
 
@@ -68,6 +66,25 @@ def verify_auth_link(request, user_id, encrypted_code):
         return render(request, "layout/redirect.html", {"redirect":":CLOSE", "msg":"인증기간이 만료되어, 신규 본인인증메일을 발송하였습니다.\\r\\n새로운 본인인증메일에서 다시 시도해주세요."})
 
     if auth.is_valid(encrypted_code):
+        login(request, user)
         return render(request, "layout/redirect.html", {"redirect":reverse("mainapp:index"), "msg":"본인인증이 완료되었습니다."})
     else:
         return render(request, "layout/redirect.html", {"redirect":":CLOSE", "msg":"본인인증 주소를 확인해주세요."})
+
+
+def mypage(request):
+    return render(request, "app/userapp/mypage.html")
+
+def _logout(request):
+    try:
+        auth.logout(request)
+    except Exception as e:
+        print(e)
+
+def password_change_done(request):
+    _logout(request)
+    return render(request, "layout/redirect.html", {"redirect":reverse("mainapp:index"), "msg":"비밀번호 변경이 완료되었습니다.\\r\\n변경한 비밀번호로 다시 로그인해주세요."})
+
+def logout(request):
+    _logout(request)
+    return redirect("mainapp:index")
