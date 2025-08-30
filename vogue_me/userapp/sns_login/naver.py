@@ -1,5 +1,3 @@
-from django.conf import settings
-from django.contrib.auth.models import User
 from django.db import transaction
 
 from mailapp.models import *
@@ -24,7 +22,6 @@ class Naver(SnsLogin):
         email    = data.get("email")
         name     = data.get("name")
 
-        print(f"{data=}")
         """
         data={'resultcode': '00', 'message': 'success',
               'response': {
