@@ -3,6 +3,7 @@ from pathlib import Path
 
 # .env 로드 ######################################################
 from dotenv import load_dotenv
+
 load_dotenv()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -84,30 +85,14 @@ USE_TZ          = False
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-
-# AWS 관련 설정 ###########################################
-AWS_ACCESS_KEY_ID       = os.environ.get('AWS_ACCESS_KEY_ID')
-AWS_SECRET_ACCESS_KEY   = os.environ.get('AWS_SECRET_ACCESS_KEY')
-AWS_STORAGE_BUCKET_NAME = os.environ.get('AWS_STORAGE_BUCKET_NAME')
-AWS_S3_REGION_NAME      = 'ap-northeast-2'  # 서울 리전
-AWS_S3_CUSTOM_DOMAIN    = f'{AWS_STORAGE_BUCKET_NAME}.s3.amazonaws.com'
-
 # 정적 파일 ###########################################
-# STATIC_URL = 'static/'
-STATIC_URL = f'https://{AWS_S3_CUSTOM_DOMAIN}/static/'
+STATIC_URL = 'static/'
 STATICFILES_DIRS = [
     BASE_DIR / "static",
     BASE_DIR / "userapp" / "static"
 ]
-STATIC_ROOT = BASE_DIR / "staticfiles"
 
-INSTALLED_APPS += ['storages']
-
-# STATICFILES_STORAGE 설정
-STATICFILES_STORAGE = "storages.backends.s3boto3.S3Boto3Storage"
-
-
-MEDIA_URL = '/media/'
+MEDIA_URL  = '/media/'
 MEDIA_ROOT = BASE_DIR / "media"
 
 
