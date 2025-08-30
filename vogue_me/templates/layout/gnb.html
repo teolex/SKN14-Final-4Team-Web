@@ -45,8 +45,8 @@
                             </div>
                             <hr>
                             <div class="btn-group">
-                                <button type="button" class="btn btn-primary" style="background-color: var(--color-4); border-color: var(--color-4);">My Page</button>
-                                <button type="button" class="btn btn-secondary" style="background-color: var(--color-2); border-color: var(--color-2);">Logout</button>
+                                <a href="{% url "userapp:mypage" %}" class="btn btn-primary">My Page</a>
+                                <a href="{% url "userapp:logout" %}" class="btn btn-secondary">Logout</a>
                             </div>
                         </div>
 

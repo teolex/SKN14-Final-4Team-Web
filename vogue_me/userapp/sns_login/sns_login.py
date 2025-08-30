@@ -1,8 +1,7 @@
 import requests
-from django.contrib.auth.models import User
+from django.contrib.auth import login
 from django.db import transaction
 from django.shortcuts import render, redirect
-from django.urls import reverse
 
 from mailapp.models import *
 from userapp.models import Member
@@ -43,8 +42,11 @@ class SnsLogin:
 
         # is_authed  = login_user.auth.order_by("-created_at").first().is_authed()
         is_authed  = login_user.member.is_authed()
-        if is_authed: return redirect("mainapp:index")
-        else:         return render(request, "layout/redirect.html", {"redirect":reverse("userapp:login"), "msg":"가입하신 메일에서 본인인증을 완료해주세요."})
+        if is_authed:
+            login(request, login_user)
+            return redirect("mainapp:index")
+        else:
+            return render(request, "layout/redirect.html", {"redirect":reverse("userapp:login"), "msg":"가입하신 메일에서 본인인증을 완료해주세요."})
 
     def run_when_user_not_exist(self, request, email:str, first_name, last_name, photo_url):
         new_user   = Member.add_new_user(email, first_name, last_name)

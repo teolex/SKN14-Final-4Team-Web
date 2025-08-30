@@ -42,11 +42,10 @@ class RegisterUserForm(UserCreationForm):
             cleaned_data["username"] = email  # username 필드에 email 을 설정
         return cleaned_data
 
-    def save(self, commit=True):
+    def save(self):
         user = super().save(commit=False)
         user.username = self.cleaned_data["username"]  # email → username
         user.email = self.cleaned_data["email"]
-        if commit:
-            user.save()
+        user.save()
         return user
 
