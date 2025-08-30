@@ -33,8 +33,9 @@ def signup(request):
             else:
                 user = form.save()
                 LoginAuth.send_auth_mail(request, user)
-                Member.add_new_member(user=user, sns_type="email")
+                Member.add_new_member(user=user, sns_type="email", height=form.cleaned_data["height"], birthday=form.cleaned_data["birthday"])
                 return render(request, "layout/redirect.html", {"redirect":reverse("userapp:login"), "msg":"가입하신 이메일로 본인인증을 위한 메일이 발송되었습니다."})
+        form.add_error(None, '이 필드는 필수입니다.')
     else:
         form = RegisterUserForm()
 

@@ -50,7 +50,7 @@ class SnsLogin:
 
     def run_when_user_not_exist(self, request, email:str, first_name, last_name, photo_url):
         new_user   = Member.add_new_user(email, first_name, last_name)
-        new_member = Member.add_new_member(new_user, self.provider, photo_url)
+        new_member = Member.add_new_member(new_user, self.provider, photo_url=photo_url)
         LoginAuth.send_auth_mail(request, new_member.user)
         return render(request, "layout/redirect.html", {"redirect":reverse("userapp:login"), "msg":"가입하신 이메일로 본인인증을 위한 메일이 발송되었습니다."})
 

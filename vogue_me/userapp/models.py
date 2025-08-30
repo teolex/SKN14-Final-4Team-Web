@@ -2,10 +2,13 @@ from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 from django.db import models
+from django.utils import timezone
 
 
 class Member(models.Model):
     user      = models.OneToOneField(User, on_delete=models.CASCADE, primary_key=True, related_name="member")
+    height    = models.FloatField(null=False, default=0)
+    birthday  = models.DateField(null=False, default=timezone.now())
     authed    = models.CharField(max_length=1, choices=[("Y","인증됨"),("N","미인증")], default="N")
     sns_type  = models.CharField(max_length=10)
     photo_url = models.CharField(max_length=256, null=False, default="/static/default_user.jpg")
@@ -18,8 +21,8 @@ class Member(models.Model):
         return user
 
     @classmethod
-    def add_new_member(cls, user, sns_type, photo_url="/static/default_user.jpg"):
-        member = Member.objects.create(user=user, sns_type=sns_type, photo_url=photo_url)
+    def add_new_member(cls, user, sns_type, height=0, birthday=timezone.now(), photo_url="/static/default_user.jpg"):
+        member = Member.objects.create(user=user, sns_type=sns_type, photo_url=photo_url, height=height, birthday=birthday)
         return member
 
     def is_authed(self):
@@ -29,7 +32,9 @@ class Member(models.Model):
 
 # Create your models here.
 class RegisterUserForm(UserCreationForm):
-    email = forms.EmailField(required=True)     # User 의 email 속성을 덮어쓰기 위해 선언
+    email    = forms.EmailField(required=True)     # User 의 email 속성을 덮어쓰기 위해 선언
+    height   = forms.FloatField(required=False, label="키", min_value=0)
+    birthday = forms.DateField(required=False, label="생일")
 
     class Meta:
         model  = User
