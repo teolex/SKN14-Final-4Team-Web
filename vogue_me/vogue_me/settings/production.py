@@ -1,4 +1,5 @@
 from .base import *
+import os
 
 DEBUG = False
 
@@ -29,3 +30,15 @@ STORAGES = {
 # django 4.2 버전 미만에서만 동작.
 # DEFAULT_FILE_STORAGE = "storages.backends.s3boto3.S3Boto3Storage"
 # STATICFILES_STORAGE  = "storages.backends.s3boto3.S3Boto3Storage"
+
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.mysql', # or 'mysql', 'sqlite3', 'oracle'
+        'NAME': '20250901_looplabel',
+        'USER': 'website',
+        'PASSWORD': os.getenv("DATABASE_PASSWORD"),
+        'HOST': 'database-1.c386wgw8g00f.ap-northeast-2.rds.amazonaws.com',
+        'PORT': '3306',
+    }
+}
