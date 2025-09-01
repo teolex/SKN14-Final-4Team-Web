@@ -81,5 +81,5 @@ jobs:
           DJANGO_SETTINGS_MODULE: vogue_me.settings
           DATABASE_URL: mysql://migrater:${{ secrets.DB_MIGRATER_PASSWORD }}@${{ secrets.RDS_HOST }}:3306/20250901_looplabel
         run: |
-          python manage.py makemigrations --noinput
-          python manage.py migrate --noinput
+          python vogue_me/manage.py makemigrations --noinput
+          python vogue_me/manage.py migrate --noinput
