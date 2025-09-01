@@ -8,17 +8,15 @@ on:
       - closed
 
 jobs:
-  # jobname
-  build-deploy:
-    # 수행 조건
-    if: github.event.pull_request.merged == true
+  build-deploy:   # jobname
+    if: github.event.pull_request.merged == true    # 수행 조건
     runs-on: ubuntu-latest
     steps:
       - name: ✅ Checkout Repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: 🐍 Set up Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
           python-version: 3.12
 
@@ -27,6 +25,14 @@ jobs:
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: ♻️ Cache pip
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-
 
       - name: 🏗️ Build and Push Docker images
         uses: docker/build-push-action@v2
@@ -46,3 +52,34 @@ jobs:
           region: ap-northeast-2
           version_label: "app-${{ github.sha }}"
           deployment_package: Dockerrun.aws.json
+
+  migrate:
+    runs-on: ubuntu-latest
+    needs: build-deploy   # 배포 완료 후 실행됨
+    steps:
+      - name: ✅ Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: 🐍 Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: 3.12
+
+      - name: ♻️ Cache pip
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-
+
+      - name: 📦 Install dependencies
+        run: pip install -r ./vogue_me/requirements.txt
+
+      - name: 🛠️ Run migrations
+        env:
+          DJANGO_SETTINGS_MODULE: vogue_me.settings
+          DATABASE_URL: mysql://migrater:${{ secrets.DB_MIGRATER_PASSWORD }}@${{ secrets.RDS_HOST }}:3306/20250901_looplabel
+        run: |
+          python manage.py makemigrations --noinput
+          python manage.py migrate --noinput
