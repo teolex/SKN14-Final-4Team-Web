@@ -50,7 +50,7 @@ jobs:
           application_name: ${{ secrets.AWS_EB_APPLICATION_NAME }}
           environment_name: ${{ secrets.AWS_EB_ENVIRONMENT_NAME }}
           region: ap-northeast-2
-          version_label: "app-${{ github.sha }}-run{{ github.run_number }}"
+          version_label: "app-${{ github.sha }}-run${{ github.run_number }}"
           deployment_package: Dockerrun.aws.json
 
   migrate:
