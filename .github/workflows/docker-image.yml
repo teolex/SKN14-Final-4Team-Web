@@ -79,8 +79,7 @@ jobs:
       - name: 🛠️ Run migrations
         env:
           DJANGO_SETTINGS_MODULE: vogue_me.settings
-          DJANGO_ENV: production
-          DATABASE_URL: mysql://migrater:${{ secrets.DB_MIGRATER_PASSWORD }}@${{ secrets.RDS_HOST }}:3306/20250901_looplabel
+          DJANGO_ENV: migrater
         run: |
           echo "==================== Make-migrations ===================="
           python vogue_me/manage.py makemigrations --noinput
