@@ -79,6 +79,7 @@ jobs:
       - name: 🛠️ Run migrations
         env:
           DJANGO_SETTINGS_MODULE: vogue_me.settings
+          DB_MIGRATER_PASSWORD: ${{ secrets.DB_MIGRATER_PASSWORD }}
           DJANGO_ENV: migrater
         run: |
           echo "==================== Make-migrations ===================="
