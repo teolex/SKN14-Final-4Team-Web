@@ -6,6 +6,8 @@
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        {# icons meta ##################################################}
+        {% include "layout/icons.html" %}
 
         {# Title 블럭 ##################################################}
         <title>{% block title %}{% endblock title %}</title>
@@ -21,20 +23,15 @@
 
         {# Upper script 블럭 ############################################}
         {% block upper_script %}{% endblock upper_script %}
+
         {# Style 블럭 ###################################################}
-        <style>
-            body {
-                display: flex;
-                justify-content: center;
-                align-items: center;
-                color: #055b5c;
-            }
-        </style>
         {% block style %}{% endblock style %}
     </head>
     <body>
-        {# Content 블럭 ##################################################}
-        {% block content %}{% endblock %}
+        <div class="contentBox">
+            {# Content 블럭 ##################################################}
+            {% block content %}{% endblock %}
+        </div>
 
 {#        {% include "./form_error_toast.html" %}#}
 
