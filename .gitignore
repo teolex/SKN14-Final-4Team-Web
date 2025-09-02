@@ -384,8 +384,6 @@ $RECYCLE.BIN/
 .streamlit/
 .streamlit/secrets.toml
 
-*.jpg
-*.png
 *.pdf.env
 Kongjihwan/_06_chatbot/.env
 Kongjihwan/homework_250725/.env

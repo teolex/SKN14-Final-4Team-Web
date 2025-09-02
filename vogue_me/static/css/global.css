@@ -1,14 +1,73 @@
-:root {
-    --color-1: #ccabd8;
-    --color-2: #8474a1;
-    --color-3: #6ec6ca;
-    --color-4: #08979d;
-    --color-5: #055b5c;
+@import url("https://cdnjs.cloudflare.com/ajax/libs/meyer-reset/2.0/reset.min.css");
+* {
+  -webkit-font-smoothing: antialiased;
+  box-sizing: border-box;
+  font-family: "Inter-Regular", Helvetica;
+}
+html,
+body {
+  margin: 0;
+  height: 100%;
+  background-color: #ffffff;
+}
+/* a blue color as a generic focus style */
+button:focus-visible {
+  outline: 2px solid #4a90e2 !important;
+  outline: -webkit-focus-ring-color auto 5px !important;
+}
+a {
+  text-decoration: none;
 }
 
-body {
-    background: linear-gradient(135deg, #ccabd8, #6ec6ca);
-    min-height: 100vh;
-    font-family: Arial, sans-serif;
-    position: relative;
+:root {
+  --neutral-100: rgba(16, 16, 16, 1);
+}
+
+.contentBox {
+  width: 100%;
+  max-width: 500px;
+  min-width: 400px;
+  height: 100%;
+  margin: 0 auto;
+
+}
+@media(min-width:500px) {
+  body {
+    padding:5px;
+  }
+  .contentBox {
+    border: 1px solid #0a6f60;
+    border-radius: 10px;
+  }
+}
+
+/* 버튼 글로벌 */
+.btn {
+  border-radius: 10px;
+  box-sizing: border-box;
+  font-family: "Inter-SemiBold", Helvetica;
+  font-weight: 600;
+  font-size: 16px;
+  height:56px;
+  gap: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.btn.button-primary {
+  background-color: #0a6f60;
+  border: 1px solid #0a6f60;
+  color:white;
+}
+.btn.button-primary:active {
+  color:#0a6f60;
+}
+.btn.button-secondary {
+  background-color: #ffffff;
+  border: 1px solid #0a6f60;
+  color:#0a6f60;
+}
+.btn.button-secondary:active {
+  color:gray;
 }
