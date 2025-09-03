@@ -1,10 +1,13 @@
 import json
 
+from django.conf import settings
 from django.contrib import auth
 from django.contrib.auth import login
+from django.contrib.auth.models import User
 from django.db import transaction
 from django.http import JsonResponse, HttpResponse
 from django.shortcuts import render, redirect
+from django.urls import reverse
 
 from mailapp.models import *
 from .models import RegisterUserForm, Member
@@ -12,10 +15,23 @@ from .sns_login.google import Google
 from .sns_login.kakao import Kakao
 from .sns_login.naver import Naver
 
+
+
 google = Google()
 kakao  = Kakao()
 naver  = Naver()
 
+
+
+# 로그인할 지, 회원가입할 지 선택하는 화면
+def signin_or_up(request):
+    return render(request, "app/userapp/signin_or_up.html", {"GOOGLE_CLIENT_ID"  : settings.GOOGLE_CLIENT_ID})
+
+# 회원가입 방법중에 구글로 할지 이메일 가입할 지 선택하는 화면
+def signup_choice(request):
+    return render(request, "app/userapp/signup_choice.html", {"GOOGLE_CLIENT_ID"  : settings.GOOGLE_CLIENT_ID})
+
+# SNS 회원가입 또는 SNS 로그인
 def sns_login(request, provider):
     if provider == "google":  return google.login(request)
     if provider == "kakao":   return kakao.login(request)
@@ -23,6 +39,7 @@ def sns_login(request, provider):
 
     return HttpResponse("sns login done")
 
+# 이메일로 회원가입
 @transaction.atomic
 def signup(request):
     if request.method == "POST":
@@ -33,14 +50,16 @@ def signup(request):
             else:
                 user = form.save()
                 LoginAuth.send_auth_mail(request, user)
-                Member.add_new_member(user=user, sns_type="email", height=form.cleaned_data["height"], birthday=form.cleaned_data["birthday"])
+                # Member.add_new_member(user=user, sns_type="email", height=form.cleaned_data["height"], birthday=form.cleaned_data["birthday"])
+                Member.add_new_member(user=user, sns_type="email")
                 return render(request, "layout/redirect.html", {"redirect":reverse("userapp:login"), "msg":"가입하신 이메일로 본인인증을 위한 메일이 발송되었습니다."})
         form.add_error(None, '이 필드는 필수입니다.')
     else:
         form = RegisterUserForm()
 
-    return render(request, "app/userapp/signup.html", {"form":form})
+    return render(request, "app/userapp/signup.html", {"form":form, "GOOGLE_CLIENT_ID"  : settings.GOOGLE_CLIENT_ID})
 
+# 회원가입할 때 이메일이 중복인지 검사
 def check_email_dup(request):
     if request.method == "GET": return redirect("mainapp:index")
 
@@ -48,7 +67,7 @@ def check_email_dup(request):
     email = data.get("email")
     return JsonResponse({ "already_exist" : User.objects.filter(email=email).exists() })
 
-
+# 본인인증 메일에서 버튼 클릭 시 인증 상태 확인.
 def verify_auth_link(request, user_id, encrypted_code):
     if not User.objects.filter(id=user_id).exists():
         return render(request, "layout/redirect.html", {"redirect":":CLOSE", "msg":"본인인증 주소를 확인해주세요."})
@@ -72,8 +91,6 @@ def verify_auth_link(request, user_id, encrypted_code):
         return render(request, "layout/redirect.html", {"redirect":":CLOSE", "msg":"본인인증 주소를 확인해주세요."})
 
 
-def mypage(request):
-    return render(request, "app/userapp/mypage.html")
 
 def _logout(request):
     try:
@@ -87,4 +104,4 @@ def password_change_done(request):
 
 def logout(request):
     _logout(request)
-    return redirect("mainapp:index")
+    return redirect("userapp:signin_or_up")

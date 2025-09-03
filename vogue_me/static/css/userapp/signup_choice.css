@@ -1,0 +1,96 @@
+.sign-up {
+  display: flex;
+  flex-direction:column;
+  justify-items: center;
+  align-items: center;
+  width: 100%;
+  height:100%;
+  position:relative;
+}
+
+.sign-up .green-board {
+  width: 373px;
+  height: 697px;
+  margin-top: 44px;
+  background-color: #0a6f601a;
+  border-radius: 32px;
+  display: flex;
+  flex-direction:column;
+  justify-items: center;
+  align-items: center;
+}
+
+.sign-up .green-board .overlap {
+  position: absolute;
+  top: 172px;
+  width: 319px;
+  height: 105px;
+}
+.sign-up .green-board .overlap .screenshot {
+  width: 319px;
+  height: 86px;
+  aspect-ratio: 3.69;
+  object-fit: cover;
+}
+.sign-up .green-board .overlap .text-wrapper-2 {
+  width: 319px;
+  position: absolute;
+  top: 85px;
+  font-weight: 400;
+  font-size: 16px;
+  color: #667085b2;
+  text-align: center;
+  line-height: 20px;
+}
+
+
+.sign-up .green-board .btn-area {
+  position:absolute;
+  top: 580px;
+}
+.sign-up .green-board .btn-area .button-with-icon {
+  display:flex;
+  flex-wrap: wrap;
+  align-content: center;
+  background-color: #ffffff;
+  border-radius: 28px;
+  border: 1px solid;
+  border-color: #d8dadc;
+  width: 353px;
+  height:54px;
+  margin-top:10px;
+}
+.sign-up .green-board .btn-area .button-with-icon .group {
+  display:flex;
+  align-content: center;
+}
+.sign-up .green-board .btn-area .button-with-icon img {
+  width:20px;
+  height:20px;
+  margin-left:17px;
+}
+.sign-up .green-board .btn-area .button-with-icon span {
+  margin-left:20px;
+  font-family: "Inter-SemiBold", Helvetica;
+  font-weight: 600;
+  color: #0b1220;
+  font-size: 16px;
+  letter-spacing: 0;
+  line-height: 20px;
+  white-space: nowrap;
+}
+
+.sign-up .already-have {
+  position:relative;
+  top:40px;
+}
+.sign-up .already-have span {
+  color: #000000b2;
+}
+
+.sign-up .text-wrapper-4 a {
+  font-family: "Inter-SemiBold", Helvetica;
+  font-weight: 600;
+  color: #0b1220;
+  text-decoration: underline;
+}

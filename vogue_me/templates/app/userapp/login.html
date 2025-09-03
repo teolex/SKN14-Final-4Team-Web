@@ -2,86 +2,64 @@
 
 {% load static %}
 
-{% block title %}Vogue Me || Login{% endblock title %}
+{% block title %}LoopLabel | Login{% endblock title %}
 
 {% block style %}
-    <link rel="stylesheet" href="{% static "userapp/css/login.css" %}">
+    <link rel="stylesheet" href="{% static "css/userapp/login.css" %}">
 {% endblock style %}
 
 
 {% block content %}
-    <div class="login-container text-center">
-        <!-- 로고 이미지 -->
-        <img src="https://placehold.co/150x80/ccabd8/055b5c?text=Logo" alt="로고" class="logo-image">
-
-        <!-- 로그인 폼 -->
-        <form method="post">
-            {% csrf_token %}
-            <div class="mb-3">
-                <input type="email" class="form-control" id="emailInput" name="username" placeholder="이메일">
+    <main class="sign-up">
+        <div class="div">
+            <div class="screenshot">
+                <img src="{% static "images/logo.png" %}" alt="LoopLabel Logo"/>
             </div>
-            <div class="mb-3">
-                <input type="password" class="form-control" id="passwordInput" name="password" placeholder="비밀번호">
-            </div>
-            <button type="submit" class="btn btn-primary w-100">로그인</button>
-        </form>
-
-        <div class="mt-3">
-            <small>계정이 없으신가요? <a href="{% url 'userapp:signup' %}">회원가입</a></small>
-        </div>
-
-        <p class="mt-4 text-muted">또는 SNS 계정으로 로그인</p>
-
-        {# 구글 로그인 #}
-        <button data-sns="google" class="sns-login-btn gsi-material-button">
-            <div class="gsi-material-button-state"></div>
-            <div class="gsi-material-button-content-wrapper">
-                <div class="gsi-material-button-icon">
-                    <svg version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" xmlns:xlink="http://www.w3.org/1999/xlink" style="display: block;">
-                        <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"></path>
-                        <path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"></path>
-                        <path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"></path>
-                        <path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"></path>
-                        <path fill="none" d="M0 0h48v48H0z"></path>
-                    </svg>
+            <h1 class="text-wrapper">Hi, Welcome!👋</h1>
+            <form action="{% url "userapp:login" %}" method="post" class="signup-form needs-validation" novalidate>
+                {% csrf_token %}
+                <div class="inputbox mb-3">
+                    <label class="title">Email</label>
+                    <input type="email" class="form-control" name="username" placeholder="example@domain.com" value="{{ form.username.value|default:"" }}" required>
                 </div>
-                <span class="gsi-material-button-contents">Login with Google</span>
-                <span style="display: none;">Sign in with Google</span>
+                <div class="inputbox mb-3">
+                    <label class="title">Password</label>
+                    <input type="password" class="form-control" name="password" required>
+                </div>
+                <div class="inputbox mb-3" style="flex-direction:row;">
+                    <label>
+                        <input class="form-check-input mt-0" type="checkbox" value="Y" aria-label="Checkbox for following text input" required>
+                        <span class="p">Remember me</span>
+                    </label>
+                </div>
+                <button type="submit" class="button-primary">Log in</button>
+            </form>
+            <div class="or-register-with">
+                <hr><span>Or Register with</span><hr>
             </div>
-        </button>
-        {# 네이버 로그인 #}
-{#        <a class="sns-login-btn naver-login-btn" data-sns="naver">#}
-{#            <div>#}
-{#                <div class="sns-logo-box"><img src="{% static "images/sns_login/btnG_icon_square.png" %}" alt="네이버 아이콘"></div>#}
-{#                <div class="sns-text-box">#}
-{#                    <div>Login with Naver</div>#}
-{#                </div>#}
-{#            </div>#}
-{#        </a>#}
-        {# 카카오 로그인 #}
-{#        <button data-sns="kakao"  class="sns-login-btn">#}
-{#            <img src="{% static "images/sns_login/kakao_login_medium_wide.png" %}">#}
-{#        </button>#}
-
-        <!-- 카피라이트 -->
-        <div class="mt-4 text-muted">
-            <small>&copy; 2024 Your Company. All Rights Reserved.</small>
+            <button type="button" class="button-with-centered sns-login-btn" aria-label="Sign up with Google" data-sns="google">
+                <img class="icon" src="{% static "images/signup/google_24px.svg" %}" alt="Google"/>
+                Google
+            </button>
+            <p class="already-have-an">
+                Don't have an account? <a href="{% url "userapp:signup" %}" class="text-wrapper-3">Sign up</a>
+            </p>
         </div>
-    </div>
+    </main>
 {% endblock %}
 
 {% block script %}
     <script>
-        const KAKAO_CLIENT_ID  = "{{ KAKAO_CLIENT_ID }}";
-        const NAVER_CLIENT_ID  = "{{ NAVER_CLIENT_ID }}";
+        {#const KAKAO_CLIENT_ID  = "{{ KAKAO_CLIENT_ID }}";#}
+        {#const NAVER_CLIENT_ID  = "{{ NAVER_CLIENT_ID }}";#}
         const GOOGLE_CLIENT_ID = "{{ GOOGLE_CLIENT_ID }}";
     </script>
-    <script src="{% static "userapp/js/login.js" %}"></script>
+    <script src="{% static "js/userapp/login.js" %}"></script>
     <script>
         {% for field, errors in form.errors.items %}
-            {% for error in errors %}
-                alert("{{ error }}");
-            {% endfor %}
+            {% if field == "__all__" %}
+                alert("{{ errors.0 }}");
+            {% endif %}
         {% endfor %}
     </script>
 {% endblock script %}

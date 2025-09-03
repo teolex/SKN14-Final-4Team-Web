@@ -1,0 +1,49 @@
+{% extends "layout/base_content_only.html" %}
+
+{% load static %}
+
+{% block title %}LoopLabel | Create account{% endblock title %}
+
+{% block style %}
+    <link rel="stylesheet" href="{% static "css/userapp/signup_choice.css" %}">
+{% endblock style %}
+
+
+{% block content %}
+    <div class="sign-up">
+        <div class="green-board">
+            <div class="overlap">
+                <img class="screenshot" src="{% static "images/logo_big.png" %}" alt="LoopLabel logo"/>
+                <div class="text-wrapper-2">지구의 회복을 이어주는 라벨</div>
+            </div>
+            <div class="btn-area">
+                <a href="javascript:;" class="button-with-icon sns-login-btn" aria-label="Continue with Google" data-sns="google">
+                    <div class="group">
+                        <img src="{% static "images/signup/google_24px.svg" %}" alt="Google icon"/>
+                        <span class="text-wrapper">Continue with Google</span>
+                    </div>
+                </a>
+                <a href="{% url "userapp:signup" %}" class="button-with-icon" aria-label="Continue with Email">
+                    <div class="group">
+                        <img src="{% static "images/signup/email_icon.svg" %}" alt="email icon"/>
+                        <span class="text-wrapper">Continue with Email</span>
+                    </div>
+                </a>
+            </div>
+        </div>
+        <div class="already-have">
+            <span>Already have an account?</span>
+            <span>&nbsp;</span>
+            <span class="text-wrapper-4"><a href="{% url "userapp:login" %}">Log in</a></span>
+        </div>
+    </div>
+{% endblock %}
+
+{% block script %}
+    <script>
+        {#const KAKAO_CLIENT_ID  = "{{ KAKAO_CLIENT_ID }}";#}
+        {#const NAVER_CLIENT_ID  = "{{ NAVER_CLIENT_ID }}";#}
+        const GOOGLE_CLIENT_ID = "{{ GOOGLE_CLIENT_ID }}";
+    </script>
+    <script src="{% static "js/userapp/login.js" %}"></script>
+{% endblock script %}

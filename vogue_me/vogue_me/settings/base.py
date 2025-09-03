@@ -97,7 +97,7 @@ MEDIA_ROOT = BASE_DIR / "media"
 
 
 # 로그인 성공한 후의 리다이렉트 URL ( 기본값 = /accounts/profile )
-LOGIN_URL = '/user/login'
+LOGIN_URL = '/user/signin_or_up'
 LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = '/'
 

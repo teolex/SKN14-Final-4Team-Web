@@ -2,65 +2,83 @@
 
 {% load static %}
 
-{% block title %}Vogue Me || Sign Up{% endblock title %}
+{% block title %}LoopLabel | Create Account - Sign Up{% endblock title %}
 
 {% block style %}
-    <link rel="stylesheet" href="{% static "userapp/css/login.css" %}">
-    <style>
-        .list-group { text-align:left; font-size:13px; }
-        .list-group .list-group-item { color:#c3c3c3; padding:0; border:unset; background-color:unset; }
-    </style>
+    <link rel="stylesheet" href="{% static "css/userapp/signup.css" %}">
 {% endblock style %}
 
 
 {% block content %}
-    <div class="login-container">
-        <!-- 로고 이미지 -->
-        <div class="text-center">
-            <img src="https://placehold.co/150x80/ccabd8/055b5c?text=Logo" alt="로고" class="logo-image">
-        </div>
-
-        <!-- 회원가입 폼 -->
-        <form action="/user/signup/" method="post" class="needs-validation" novalidate>
-            {% csrf_token %}
-            <div class="mb-3">
-                <input type="email" class="form-control" name="email" placeholder="이메일" required>
-                <div class="invalid-feedback"></div>
+    <main class="sign-up">
+        <div class="div">
+            <div class="screenshot">
+                <img src="{% static "images/logo.png" %}" alt="LoopLabel Logo"/>
             </div>
-            <div class="mb-3">
-                <input type="text" class="form-control" name="first_name" placeholder="이름" required>
-            </div>
-            <div class="mb-3">
-                <input type="text" class="form-control" name="last_name" placeholder="성" required>
-            </div>
-            <div class="mb-3">
-                <input type="number" class="form-control" name="height" placeholder="키(cm)" step="0.1" min="0">
-            </div>
-            <div class="mb-3">
-                <input type="date" class="form-control" name="birthday" placeholder="생일">
-            </div>
-            <div class="mb-3">
-                <input type="password" class="form-control" name="password1" placeholder="비밀번호" required>
-                <ul class="list-group" id="passwordRules">
-                    <li class="list-group-item" id="rule-lower">❓ 소문자 포함</li>
-                    <li class="list-group-item" id="rule-upper">❓ 대문자 포함</li>
-                    <li class="list-group-item" id="rule-number">❓ 숫자 포함</li>
-                    <li class="list-group-item" id="rule-special">❓ 특수기호 ! @ # $ % ^ & * ( ) 중 하나 이상 포함</li>
-                    <li class="list-group-item" id="rule-length">❓ 길이 8자 이상</li>
-                </ul>
-            </div>
-            <div class="mb-3">
-                <input type="password" class="form-control" name="password2" placeholder="비밀번호 확인" required>
-                <div class="invalid-feedback">
-                    입력하신 비밀번호와 다릅니다.
+            <h1 class="text-wrapper">Create account</h1>
+            <form action="{% url "userapp:signup" %}" method="post" class="signup-form needs-validation" novalidate>
+                {% csrf_token %}
+                <div class="inputbox mb-3">
+                    <label class="title">Email</label>
+                    <input type="email" class="form-control" name="email" placeholder="example@domain.com" value="{{ form.email.value|default:"" }}" required>
+                    <div class="invalid-feedback"></div>
                 </div>
+                <div class="inputbox mb-3">
+                    <label class="title">First name</label>
+                    <input type="text" class="form-control" name="first_name" placeholder="James" value="{{ form.first_name.value|default:"" }}">
+                    <div class="invalid-feedback"></div>
+                </div>
+                <div class="inputbox mb-3">
+                    <label class="title">Last name</label>
+                    <input type="text" class="form-control" name="last_name" placeholder="Bond" value="{{ form.last_name.value|default:"" }}">
+                    <div class="invalid-feedback"></div>
+                </div>
+                <div class="inputbox mb-3">
+                    <label class="title">Password</label>
+                    <input type="password" class="form-control" name="password1" required>
+                    <ul class="list-group" id="passwordRules">
+                        <li class="list-group-item" id="rule-lower">❓ Including lower case alphabet</li>
+                        <li class="list-group-item" id="rule-upper">❓ Including upper case alphabet</li>
+                        <li class="list-group-item" id="rule-number">❓ Including digits</li>
+                        <li class="list-group-item" id="rule-special">❓ Including special character among ! @ # $ % ^ & * ( ) </li>
+                        <li class="list-group-item" id="rule-length">❓ Over 8 letters</li>
+                    </ul>
+                </div>
+                <div class="inputbox mb-3">
+                    <input type="password" class="form-control" name="password2" placeholder="Password confirm" required>
+                    <div class="invalid-feedback">The password you entered is different.</div>
+                </div>
+                <div class="inputbox mb-3" style="flex-direction:row;">
+                    <label>
+                        <input class="form-check-input mt-0" type="checkbox" value="Y" aria-label="Checkbox for following text input" required>
+                        <span class="p">I accept the terms and privacy policy</span>
+                        <div class="invalid-feedback"></div>
+                    </label>
+                </div>
+                <button type="submit" class="button-primary">Register</button>
+            </form>
+            <div class="or-register-with">
+                <hr><span>Or Register with</span><hr>
             </div>
-            <button type="submit" class="btn btn-primary w-100">회원가입</button>
-        </form>
-    </div>
+            <button type="button" class="button-with-centered sns-login-btn" aria-label="Sign up with Google" data-sns="google">
+                <img class="icon" src="{% static "images/signup/google_24px.svg" %}" alt="Google"/>
+                Google
+            </button>
+            <p class="already-have-an">
+                Already have an account? <a href="{% url "userapp:login" %}" class="text-wrapper-3">Log in</a>
+            </p>
+        </div>
+    </main>
 {% endblock %}
 
 {% block script %}
+    <script>
+        {#const KAKAO_CLIENT_ID  = "{{ KAKAO_CLIENT_ID }}";#}
+        {#const NAVER_CLIENT_ID  = "{{ NAVER_CLIENT_ID }}";#}
+        const GOOGLE_CLIENT_ID = "{{ GOOGLE_CLIENT_ID }}";
+    </script>
+    <script src="{% static "js/userapp/login.js" %}"></script>
+
     <script src="{% static 'js/signup.js' %}"></script>
     <script>
         init_email_dup("{% url "userapp:check_email_dup" %}");

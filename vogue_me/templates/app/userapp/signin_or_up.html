@@ -1,0 +1,27 @@
+{% extends "layout/base_content_only.html" %}
+
+{% load static %}
+
+{% block title %}LoopLabel | 지구의 회복을 이어주는 라벨{% endblock title %}
+
+
+{% block style %}
+    <link rel="stylesheet" href="{% static 'css/userapp/signin_or_up.css' %}">
+{% endblock style %}
+
+
+{% block content %}
+    <div class="openning-screen">
+        <div class="overlap-group">
+            <img class="screenshot" src="{% static "images/logo_big.png" %}" alt="LoopLabel logo"/>
+            <p class="text-wrapper-2">지구의 회복을 이어주는 라벨</p>
+        </div>
+        <a href="{% url "userapp:login" %}" class="btn button-primary" aria-label="Sign In">Sign In</a>
+        <a href="{% url "userapp:signup_choice" %}" class="btn button-secondary" aria-label="Create account">Create account</a>
+    </div>
+{% endblock content %}
+
+
+{% block script %}
+
+{% endblock script %}
