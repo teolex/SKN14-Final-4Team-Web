@@ -17,13 +17,16 @@ class CustomLoginViewForm(AuthenticationForm):
 
             if email and passwd:
                 user = authenticate(self.request, username=email, password=passwd)
+
+                if not user.member.is_authed():
+                    raise forms.ValidationError("가입하신 이메일에서 본인인증 메일 확인 후 다시 시도해주세요.")
+
+                self.user_cache = user
+            else:
+                raise forms.ValidationError("이메일과 비밀번호를 확인해주세요.")
         except:
             raise forms.ValidationError("이메일과 비밀번호를 확인해주세요.")
 
-        if not user.member.is_authed():
-            raise forms.ValidationError("가입하신 이메일에서 본인인증 메일 확인 후 다시 시도해주세요.")
-
-        self.user_cache = user
         return self.cleaned_data
 
 

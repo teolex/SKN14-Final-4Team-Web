@@ -25,4 +25,5 @@ urlpatterns = [
     path(''         , v.index       , name="index"),
     path('style'    , v.style       , name="style"),
     path('our_team' , v.our_team    , name="our_team"),
+
 ]

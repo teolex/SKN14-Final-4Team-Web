@@ -9,14 +9,14 @@ const OAUTH_PROVIDERS = {
             scope         : "openid profile email",
         }
     },
-    naver: {
-        authUrl : "https://nid.naver.com/oauth2.0/authorize",
-        params  : {
-            client_id     : NAVER_CLIENT_ID,
-            redirect_uri  : "http://" + DOMAIN + "/user/sns_login/naver",
-            response_type : "code",
-        }
-    },
+    // naver: {
+    //     authUrl : "https://nid.naver.com/oauth2.0/authorize",
+    //     params  : {
+    //         client_id     : NAVER_CLIENT_ID,
+    //         redirect_uri  : "http://" + DOMAIN + "/user/sns_login/naver",
+    //         response_type : "code",
+    //     }
+    // },
     // kakao: {     // 카카오 로그인 API 는 이메일/이름을 받으려면 비즈니스 앱 신청이 필수.
     //     authUrl : "https://kauth.kakao.com/oauth/authorize",
     //     params  : {
