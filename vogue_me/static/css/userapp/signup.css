@@ -1,0 +1,164 @@
+.sign-up {
+  display: grid;
+  justify-items: center;
+  align-items: start;
+  width: 100%;
+  min-height: 100dvh;
+}
+
+.sign-up .div {
+  width: 100%;
+  min-height: 100dvh;
+  height: auto;
+  position: relative;
+  padding:20px;
+}
+
+.sign-up .screenshot {
+  width:100%;
+  height: 54px;
+  margin-top: 47px;
+  text-align:right;
+  aspect-ratio: 3.69;
+  object-fit: cover;
+}
+.sign-up .screenshot img { max-height:100%; }
+
+.sign-up .text-wrapper {
+  width: 339px;
+  margin-top: 43px;
+  font-family: "Poppins-Bold", Helvetica;
+  font-weight: 700;
+  color: #0b1220;
+  font-size: 30px;
+  letter-spacing: -0.30px;
+  line-height: 39.0px;
+}
+
+.signup-form {
+  width: 100%;
+  height: 100%;
+  display:flex;
+  flex-direction:column;
+  margin-top:50px;
+}
+
+.inputbox {
+  display: inline-flex;
+  flex-direction: column;
+  gap:10px;
+}
+
+.form-control {
+  padding:17px 16px;
+  border-radius: 10px;
+  border: 1px solid #0a6f60;
+}
+
+.inputbox .title {
+  position: relative;
+  width: fit-content;
+  margin-top: -1.00px;
+  font-family: "Inter-Regular", Helvetica;
+  font-weight: 400;
+  color: #364152;
+  font-size: 14px;
+  letter-spacing: 0;
+  line-height: 17.5px;
+  white-space: nowrap;
+  background: transparent;
+  border: none;
+  padding: 0;
+}
+
+#passwordRules li {
+  color: gray;
+  font-size: 0.8rem;
+  padding: 4px 15px;
+  border: 0;
+}
+
+.or-register-with {
+  display:flex;
+  justify-content: center;
+  align-content: center;
+  gap:5px;
+  padding:15px 0;
+  flex-wrap: wrap;
+}
+.or-register-with span {
+  color:gray; margin:9px 10px 0 10px;
+}
+.or-register-with hr {
+  display:inline-block;
+  width:30%;
+}
+
+  /*.sign-up .p {*/
+  /*  position: absolute;*/
+  /*  height: 18px;*/
+  /*  top: 530px;*/
+  /*  left: 52px;*/
+  /*  font-family: "Inter-Regular", Helvetica;*/
+  /*  font-weight: 400;*/
+  /*  color: #0b1220;*/
+  /*  font-size: 14px;*/
+  /*  letter-spacing: 0;*/
+  /*  line-height: 17.5px;*/
+  /*  white-space: nowrap;*/
+  /*}*/
+
+
+
+  .sign-up .button-primary {
+    box-sizing: border-box;
+    width: 100%;
+    padding: 17px 0;
+    text-align:center;
+    background-color: #0a6f60;
+    border-radius: 10px;
+    font-family: "Inter-SemiBold", Helvetica;
+    font-weight: 600;
+    color: #ffffff;
+    font-size: 16px;
+    letter-spacing: 0;
+    line-height: 20px;
+    white-space: nowrap;
+  }
+
+
+.button-with-centered {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 18px 16px;
+  width:100%;
+  gap: 12px;
+  background-color: #ffffff;
+  border-radius: 10px;
+  border: 1px solid #d8dadc;
+}
+
+.button-with-centered .icon {
+  position: relative;
+  width: 20px;
+  height: 20px;
+}
+
+.already-have-an {
+  height: 18px;
+  font-family: "Inter-Regular", Helvetica;
+  font-weight: 400;
+  font-size: 14px;
+  letter-spacing: 0;
+  line-height: 17.5px;
+  white-space: nowrap;
+  text-align:center;
+  margin-top:25px;
+}
+.already-have-an a {
+  font-family: "Inter-SemiBold", Helvetica;
+  font-weight: 600;
+  color: #000000;
+  text-decoration: underline;
+}
