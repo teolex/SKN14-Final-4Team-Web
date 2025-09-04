@@ -23,7 +23,5 @@ app_name = 'mainapp'
 urlpatterns = [
     # path('', RedirectView.as_view(url='/user/login'), name="index"),
     path(''         , v.index       , name="index"),
-    path('style'    , v.style       , name="style"),
-    path('our_team' , v.our_team    , name="our_team"),
 
 ]
