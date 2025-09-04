@@ -1,0 +1,767 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>미니멀 테일러드</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background-color: #f8f8f8;
+            color: #333;
+        }
+
+        .container {
+            max-width: 375px;
+            margin: 0 auto;
+            background: white;
+            min-height: 100vh;
+        }
+
+        /* Header */
+        .header {
+            position: relative;
+            background: white;
+        }
+
+        .product-image {
+            width: 100%;
+            height: 400px;
+            object-fit: cover;
+            border-radius: 0 0 20px 20px;
+        }
+
+        .nav-buttons {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            right: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .back-btn, .heart-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .back-btn {
+            background: rgba(0, 0, 0, 0.3);
+            color: white;
+        }
+
+        .heart-btn {
+            background: #ff4757;
+            color: white;
+        }
+
+        .heart-btn.liked {
+            background: #0B1220 !important;
+        }
+
+        .back-btn:hover {
+            background: rgba(0, 0, 0, 0.5);
+        }
+
+        .heart-btn:hover {
+            background: #ff3838;
+        }
+
+        /* Product Info */
+        .product-info {
+            padding: 24px 20px;
+        }
+
+        .product-title {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 12px;
+            color: #2d3436;
+        }
+
+        .product-description {
+            font-size: 14px;
+            line-height: 1.5;
+            color: #636e72;
+            margin-bottom: 16px;
+        }
+
+        .read-more {
+            color: #0984e3;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .read-more:hover {
+            text-decoration: underline;
+        }
+
+        /* Audio Player */
+        .audio-player {
+            background: #f1f2f6;
+            border-radius: 12px;
+            padding: 16px;
+            margin: 20px 0;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .play-btn {
+            width: 32px;
+            height: 32px;
+            border: none;
+            background: #2d3436;
+            color: white;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .audio-info {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .audio-time {
+            font-size: 14px;
+            color: #636e72;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 4px;
+            background: #ddd;
+            border-radius: 2px;
+            overflow: hidden;
+        }
+
+        .progress {
+            width: 15%;
+            height: 100%;
+            background: #2d3436;
+            transition: width 0.3s;
+        }
+
+        .volume-btn, .more-btn {
+            width: 24px;
+            height: 24px;
+            border: none;
+            background: none;
+            color: #636e72;
+            cursor: pointer;
+        }
+
+        /* Environmental Info */
+        .env-section {
+            {% comment %} margin: 24px 0; {% endcomment %}
+            margin-top: 40px;
+            padding-top: 0px;
+        }
+
+        .env-title {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 16px;
+            color: #2d3436;
+        }
+
+        .env-items {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .env-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px;
+            background: #f8f9fa;
+            border-radius: 10px;
+        }
+
+        .env-icon {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+        }
+
+        .water-icon {
+            background: #74b9ff;
+            color: white;
+        }
+
+        .co2-icon {
+            background: #fdcb6e;
+            color: white;
+        }
+
+        .env-text {
+            flex: 1;
+        }
+
+        .env-main {
+            font-weight: 600;
+            color: #20A090;
+            margin-bottom: 2px;
+        }
+
+        .env-sub {
+            font-size: 12px;
+            color: #636e72;
+        }
+
+        /* Related Items */
+        .related-section {
+            margin-top: 40px;
+            padding-top: 0px;
+            {% comment %} border-top: 1px solid #e9ecef; {% endcomment %}
+        }
+
+        .related-title {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: #2d3436;
+        }
+
+        .related-items {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .related-item {
+            display: flex;
+            gap: 16px;
+            padding: 16px;
+            background: #fff;
+            border-radius: 12px;
+            border: 1px solid #e9ecef;
+            transition: all 0.2s;
+        }
+
+        .related-item:hover {
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            transform: translateY(-1px);
+        }
+
+        .related-image {
+            width: 70px;
+            height: 70px;
+            border-radius: 10px;
+            object-fit: cover;
+            background: #f1f2f6;
+        }
+
+        .related-info {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .related-name {
+            font-weight: 600;
+            color: #2d3436;
+            font-size: 14px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .related-desc {
+            font-size: 12px;
+            color: #636e72;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .related-price {
+            font-weight: 700;
+            color: #2d3436;
+            margin-top: 4px;
+        }
+
+        .related-actions {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            align-items: flex-end;
+        }
+
+        .more-options {
+            background: none;
+            border: none;
+            color: #636e72;
+            cursor: pointer;
+            padding: 4px;
+        }
+
+        .shop-btn {
+            background: #20A090;
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 16px;
+            font-size: 12px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background 0.2s;
+            white-space: nowrap;
+        }
+
+        .shop-btn:hover {
+            background: #00b894;
+        }
+
+        /* Bottom Navigation */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            max-width: 375px;
+            width: 100%;
+            background: white;
+            border-top: 1px solid #e9ecef;
+            padding: 10px 0;
+        }
+
+        .nav-indicator {
+            width: 40px;
+            height: 4px;
+            background: #ddd;
+            border-radius: 2px;
+            margin: 0 auto;
+        }
+
+        /* Item menu bottom-sheet */
+        .overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.4);
+            display: none;
+            z-index: 1000;
+        }
+        .item-menu {
+            position: fixed;
+            left: 50%;
+            bottom: 0; /* will be adjusted at runtime to bottom-nav height */
+            transform: translate(-50%, 100%);
+            width: 100%;
+            max-width: 375px;
+            background: #fff;
+            border-radius: 16px 16px 0 0;
+            box-shadow: 0 -8px 24px rgba(0,0,0,0.15);
+            padding: 12px 0;
+            transition: transform .25s ease;
+        }
+        .item-menu .handle {
+            width: 40px;
+            height: 4px;
+            background: #e5e7eb;
+            border-radius: 2px;
+            margin: 8px auto 12px;
+        }
+        .item-menu .title {
+            text-align: center;
+            font-weight: 600;
+            color: #2d3436;
+            margin-bottom: 8px;
+        }
+        .item-menu .list {
+            display: flex;
+            flex-direction: column;
+        }
+        .item-menu .list button {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+            background: transparent;
+            border: none;
+            padding: 14px 16px;
+            font-size: 14px;
+            color: #2d3436;
+            cursor: pointer;
+        }
+        .item-menu .list button + button { border-top: 1px solid #f0f0f0; }
+        .overlay.show { display: block; }
+        .overlay.show .item-menu { transform: translate(-50%, 0); }
+
+        @media (max-width: 375px) {
+            .container {
+                max-width: 100%;
+            }
+            
+            .bottom-nav {
+                max-width: 100%;
+            }
+        }
+
+        @media (min-width: 376px) {
+            .container {
+                border: 1px solid #e9ecef;
+                border-radius: 0;
+                margin-top: 20px;
+                margin-bottom: 20px;
+            }
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .product-info, .env-section, .related-section {
+            animation: fadeInUp 0.6s ease-out;
+        }
+
+        /* Floating heart button over image */
+        .heart-btn {
+            position: absolute;
+            right: 16px;
+            bottom: -12px;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            border: 1px solid rgba(0,0,0,0.05);
+            background: #ffffff;
+            color: #ff4757;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 6px 18px rgba(0,0,0,0.18);
+            cursor: pointer;
+            transition: box-shadow .2s ease, color .15s ease;
+        }
+        .heart-btn svg { display: block; transition: transform .15s ease; }
+        .heart-btn .heart-fill { display: none; }
+        .heart-btn .heart-outline { display: block; }
+        .heart-btn.filled .heart-fill { display: block; }
+        .heart-btn.filled .heart-outline { display: none; }
+        .heart-btn:hover { background: #ffffff; box-shadow: 0 8px 22px rgba(0,0,0,0.22); color: #ff2d55; }
+        .heart-btn:hover svg { transform: scale(1.08); }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header with product image -->
+        <div class="header">
+            <img src="https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=375&h=400&fit=crop&crop=center" alt="미니멀 테일러드" class="product-image">
+            <div class="nav-buttons">
+                <button class="back-btn">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                        <path d="M15 18l-6-6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </button>
+            </div>
+            <button class="heart-btn" aria-pressed="false">
+                <svg class="heart-fill" width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+                </svg>
+                <svg class="heart-outline" width="20" height="20" viewBox="0 0 24 24" fill="none">
+                    <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+            </button>
+        </div>
+
+        <!-- Product Information -->
+        <div class="product-info">
+            <h1 class="product-title">미니멀 테일러드</h1>
+            <p class="product-description">
+                오가닉 코튼 simple and elegant shape makes it perfect for those of you who like you who want minimalist clothes 
+                <a href="#" class="read-more">Read More...</a>
+            </p>
+
+            <!-- Audio Player -->
+            <div class="audio-player">
+                <button class="play-btn" onclick="togglePlay()">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" id="playIcon">
+                        <polygon points="5,3 19,12 5,21"/>
+                    </svg>
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" id="pauseIcon" style="display: none;">
+                        <rect x="6" y="4" width="4" height="16"/>
+                        <rect x="14" y="4" width="4" height="16"/>
+                    </svg>
+                </button>
+                <div class="audio-info">
+                    <div class="audio-time">0:00 / 1:23</div>
+                    <div class="progress-bar">
+                        <div class="progress" id="progress"></div>
+                    </div>
+                </div>
+                <button class="volume-btn">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                        <polygon points="11,5 6,9 2,9 2,15 6,15 11,19"/>
+                        <path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"/>
+                    </svg>
+                </button>
+                <button class="more-btn">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                        <circle cx="12" cy="12" r="1"/>
+                        <circle cx="12" cy="5" r="1"/>
+                        <circle cx="12" cy="19" r="1"/>
+                    </svg>
+                </button>
+            </div>
+
+            <!-- Environmental Impact -->
+            <div class="env-section">
+                <h2 class="env-title">환경 효과</h2>
+                <div class="env-items">
+                    <div class="env-item">
+                        <div class="env-icon water-icon">💧</div>
+                        <div class="env-text">
+                            <div class="env-main">물 250ml 절약</div>
+                            <div class="env-sub">WATER</div>
+                        </div>
+                    </div>
+                    <div class="env-item">
+                        <div class="env-icon co2-icon">🌱</div>
+                        <div class="env-text">
+                            <div class="env-main">탄소배출 35-40% 감소</div>
+                            <div class="env-sub">CO2</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Related Items -->
+            <div class="related-section">
+                <h2 class="related-title">리사이클 아이템</h2>
+                <div class="related-items">
+                    <div class="related-item">
+                        <div class="related-image" style="background: url('https://images.unsplash.com/photo-1586790170083-2f9ceadc732d?w=70&h=70&fit=crop') center/cover;"></div>
+                        <div class="related-info">
+                            <div class="related-name">Modern light clothes</div>
+                            <div class="related-desc">폐의류 재활용 섬유 사용</div>
+                            <div class="related-price">$212.99</div>
+                        </div>
+                        <div class="related-actions">
+                            <button class="more-options">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                    <circle cx="12" cy="12" r="1"/>
+                                    <circle cx="19" cy="12" r="1"/>
+                                    <circle cx="5" cy="12" r="1"/>
+                                </svg>
+                            </button>
+                            <button class="shop-btn">웹사이트</button>
+                        </div>
+                    </div>
+                    
+                    <div class="related-item">
+                        <div class="related-image" style="background: url('https://images.unsplash.com/photo-1473966968600-fa801b869a1a?w=70&h=70&fit=crop') center/cover;"></div>
+                        <div class="related-info">
+                            <div class="related-name">Modern black pants</div>
+                            <div class="related-desc">폐플라스틱병 재활용 원단</div>
+                            <div class="related-price">$162.99</div>
+                        </div>
+                        <div class="related-actions">
+                            <button class="more-options">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                    <circle cx="12" cy="12" r="1"/>
+                                    <circle cx="19" cy="12" r="1"/>
+                                    <circle cx="5" cy="12" r="1"/>
+                                </svg>
+                            </button>
+                            <button class="shop-btn">웹사이트</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Bottom Navigation -->
+        <div class="bottom-nav">
+            <div class="nav-indicator"></div>
+        </div>
+    </div>
+
+    <!-- Item menu bottom sheet overlay -->
+    <div class="overlay" id="itemMenuOverlay" role="dialog" aria-modal="true" aria-labelledby="itemMenuTitle">
+        <div class="item-menu">
+            <div class="handle"></div>
+            <div class="title" id="itemMenuTitle">Modern black pants</div>
+            <div class="list">
+                <button type="button">리사이클 인증 사이트(Textile Exchange)
+                    <span>✅</span>
+                </button>
+                <button type="button">브랜드 ESG 보고서
+                    <span>📄</span>
+                </button>
+                <button type="button">추천 근거 확인
+                    <span>❓</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let isPlaying = false;
+        let progress = 0;
+        let progressInterval;
+
+        function togglePlay() {
+            const playIcon = document.getElementById('playIcon');
+            const pauseIcon = document.getElementById('pauseIcon');
+            const progressBar = document.getElementById('progress');
+
+            isPlaying = !isPlaying;
+
+            if (isPlaying) {
+                playIcon.style.display = 'none';
+                pauseIcon.style.display = 'block';
+                startProgress();
+            } else {
+                playIcon.style.display = 'block';
+                pauseIcon.style.display = 'none';
+                stopProgress();
+            }
+        }
+
+        function startProgress() {
+            progressInterval = setInterval(() => {
+                progress += 1;
+                if (progress >= 100) {
+                    progress = 100;
+                    togglePlay();
+                }
+                document.getElementById('progress').style.width = progress + '%';
+                
+                // Update time display
+                const currentTime = Math.floor((progress / 100) * 83); // 1:23 = 83 seconds
+                const minutes = Math.floor(currentTime / 60);
+                const seconds = currentTime % 60;
+                document.querySelector('.audio-time').textContent = 
+                    `${minutes}:${seconds.toString().padStart(2, '0')} / 1:23`;
+            }, 100);
+        }
+
+        function stopProgress() {
+            if (progressInterval) {
+                clearInterval(progressInterval);
+            }
+        }
+
+        // Smooth scroll behavior for read more link
+        document.querySelector('.read-more').addEventListener('click', (e) => {
+            e.preventDefault();
+            // Here you would typically expand the description or navigate to full details
+            alert('더 자세한 정보를 보여줍니다.');
+        });
+
+        // Add click handlers for shop buttons
+        document.querySelectorAll('.shop-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                alert('공식 사이트로 이동합니다.');
+            });
+        });
+
+        // Bottom-sheet menu open/close
+        const overlay = document.getElementById('itemMenuOverlay');
+        function openItemMenu(titleText) {
+            const titleEl = document.getElementById('itemMenuTitle');
+            if (titleEl && titleText) titleEl.textContent = titleText;
+            // Position sheet just above bottom navigation
+            const bottomNav = document.querySelector('.bottom-nav');
+            const sheet = overlay.querySelector('.item-menu');
+            if (bottomNav && sheet) {
+                const navH = bottomNav.getBoundingClientRect().height || 0;
+                sheet.style.bottom = navH + 'px';
+            }
+            overlay.classList.add('show');
+        }
+        function closeItemMenu() {
+            overlay.classList.remove('show');
+        }
+        overlay.addEventListener('click', (e) => {
+            // close when clicking backdrop area outside sheet
+            if (e.target === overlay) closeItemMenu();
+        });
+        document.querySelectorAll('.more-options').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                const item = e.currentTarget.closest('.related-item');
+                const name = item?.querySelector('.related-name')?.textContent?.trim();
+                openItemMenu(name || '항목 메뉴');
+            });
+        });
+
+        // Item menu button handlers
+        const menuButtons = document.querySelectorAll('.item-menu .list button');
+        if (menuButtons.length >= 3) {
+            // First button: Recycle certification dashboard
+            menuButtons[0].addEventListener('click', () => {
+                closeItemMenu();
+                // Navigate to recycle certification dashboard
+                window.location.href = '/dashboard/recycle-certification';
+            });
+
+            // Second button: Brand website
+            menuButtons[1].addEventListener('click', () => {
+                closeItemMenu();
+                // Navigate to brand website
+                window.location.href = '/brand-website';
+            });
+
+            // Third button: Recommendation basis with vector DB highlights
+            menuButtons[2].addEventListener('click', () => {
+                closeItemMenu();
+                // Navigate to recommendation basis page
+                window.location.href = '/recommendation-basis';
+            });
+        }
+
+        // Back button handler
+        document.querySelector('.back-btn').addEventListener('click', () => {
+            if (window.history.length > 1) {
+                window.history.back();
+            } else {
+                alert('이전 페이지로 돌아갑니다.');
+            }
+        });
+
+        // Heart button toggle
+        const heartBtn = document.querySelector('.heart-btn');
+        // initial state: outlined (border-only)
+        heartBtn.classList.remove('filled');
+        heartBtn.setAttribute('aria-pressed', 'false');
+        heartBtn.addEventListener('click', function() {
+            const isFilled = this.classList.toggle('filled');
+            this.setAttribute('aria-pressed', isFilled.toString());
+        });
+    </script>
+</body>
+</html>
