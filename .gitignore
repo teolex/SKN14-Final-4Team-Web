@@ -387,6 +387,3 @@ $RECYCLE.BIN/
 *.pdf.env
 Kongjihwan/_06_chatbot/.env
 Kongjihwan/homework_250725/.env
-
-# Django python manage.py makemigrations 로 발생한 파일들을 관리대상에서 제거.
-migrations/
