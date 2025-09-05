@@ -1,7 +1,7 @@
 {
   "AWSEBDockerrunVersion": "1",
   "Image": {
-    "Name": "csr712/django-demo:latest",
+    "Name": "jihunsong88/looplabel:latest",
     "Update": "true"
   },
   "Ports": [
