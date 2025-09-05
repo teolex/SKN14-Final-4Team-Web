@@ -4,6 +4,8 @@ from django.contrib.auth.models import User
 from django.db import models
 from django.utils import timezone
 
+from mainapp.models.influencer import Influencer
+
 
 class Member(models.Model):
     user      = models.OneToOneField(User, on_delete=models.CASCADE, primary_key=True, related_name="member")
@@ -12,6 +14,8 @@ class Member(models.Model):
     authed    = models.CharField(max_length=1, choices=[("Y","인증됨"),("N","미인증")], default="N")
     sns_type  = models.CharField(max_length=10)
     photo_url = models.CharField(max_length=256, null=False, default="/static/default_user.jpg")
+
+    last_ai   = models.ForeignKey(Influencer, on_delete=models.SET_NULL, null=True, default=1)
 
     @classmethod
     def add_new_user(cls, email, first_name, last_name):
