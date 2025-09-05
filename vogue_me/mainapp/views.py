@@ -7,5 +7,5 @@ from django.shortcuts import render
 def index(request):
     return render(request, "app/mainapp/index.html")
 
-def detail(request):
+def detail(request, id):
     return render(request, "app/mainapp/detail.html")
