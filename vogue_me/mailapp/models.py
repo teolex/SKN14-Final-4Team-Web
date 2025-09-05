@@ -21,9 +21,9 @@ class LoginAuth(models.Model):
 
     @classmethod
     def send_auth_mail(cls, request, user):
-        new_auth = LoginAuth()
-        new_auth.user = user
-        new_auth.save()
+        new_auth = LoginAuth.objects.create(
+            user=user,
+        )
         context = {
             "auth_link" : "http://"+request.META['HTTP_HOST'] + reverse('userapp:verify_auth_link', kwargs={"user_id":user.id, "encrypted_code" : new_auth.get_encrypted_code()}),
             "due_time" : new_auth.expires_at.strftime("%Y.%m.%d %H:%M:%S")
