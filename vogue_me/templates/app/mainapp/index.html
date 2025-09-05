@@ -11,6 +11,7 @@
 
 
 {% block content %}
+    {% csrf_token %}
     <div id="top-area">
         <span class="profile-image-wrap">
             <a href="javascript:;" class="profile-image">
@@ -25,77 +26,6 @@
     </div>
     <div id="chat-area">
         <div class="chat ai">
-            <img class="profile-image" src="https://www.icreta.com/files/attach/images/319/275/055/8e2c1590a474a9afb78c4cb23a9af5b2.jpg">
-            <div class="msg">
-                {# Text 부분 ########################################}
-                <div class="text">
-<pre>
-감사합니다, 지훈님! 🎉
-말씀해주신 정보 꼼꼼히 확인했어요 😊
-이제 지훈님께 딱 맞는 스타일을 추천해드릴게요!
-
-혹시 지금 어떤 상황이나 스타일이 필요하신가요? 예를 들면 이런 것들이 있어요:
-
-✨ 데이트룩
-👔 오피스룩
-👟 캐주얼 데일리
-🍂 계절별 추천 (가을 코디 등)
-
-원하시는 방향을 알려주시면, 진경이가 센스 있게 코디를 골라드릴게요 💫
-</pre>
-                </div>
-                {# 검색된 룩 조회 부분 ########################################}
-                <div class="style_result">
-                    <ul>
-                        <li>
-                            <a class="look-link" href="{% url "mainapp:detail" 1 %}">
-                                <div>
-                                    <img class="look-image" src="{% static "images/dummy/dummy_look_1.jpg" %}">
-                                    <div class="inner-shadow"></div>
-                                </div>
-                                <span class="look-name">스마트 캐주얼</span>
-                                <span class="look-desc">💼 클래식하고 단정한 재활용울 수트룩</span>
-                            </a>
-                        </li>
-                        <li>
-                            <a class="look-link" href="{% url "mainapp:detail" 2 %}">
-                                <div>
-                                    <img class="look-image" src="{% static "images/dummy/dummy_look_2.jpg" %}">
-                                    <div class="inner-shadow"></div>
-                                </div>
-                                <span class="look-name">미니멀 테일러드</span>
-                                <span class="look-desc">✨ 가볍고 활동성 높은 리사이클 셋업룩</span>
-                            </a>
-                        </li>
-                        <li>
-                            <a class="look-link" href="{% url "mainapp:detail" 3 %}">
-                                <div>
-                                    <img class="look-image" src="{% static "images/dummy/dummy_look_1.jpg" %}">
-                                    <div class="inner-shadow"></div>
-                                </div>
-                                <span class="look-name">스마트 캐주얼</span>
-                                <span class="look-desc">💼 클래식하고 단정한 재활용울 수트룩</span>
-                            </a>
-                        </li>
-                    </ul>
-                </div>
-                {# 목소리 재생 부분 ########################################}
-                <div class="voice">
-{#                    <div class="play_btn"><img src="{% static "images/chatroom/play_btn.svg" %}"></div>#}
-{#                    <ul class="sound-wave"></ul>#}
-{#                    <span class="time-laps">00:34</span>#}
-                    <audio controls disableRemotePlayback="false" loop="false" src="{% static "dummy/dummy_sound.mp3" %}">브라우저가 오디오를 지원하지 않습니다.</audio>
-                </div>
-{#                <div class="custom-audio-player">#}
-{#                    <button id="playPauseButton">Play</button>#}
-{#                    <input type="range" id="volumeSlider" min="0" max="1" step="0.01" value="1">#}
-{#                    <input type="range" id="progressBar" min="0" max="100" value="0">#}
-{#                    <span id="currentTime">0:00</span> / <span id="duration">0:00</span>#}
-{#                </div>#}
-            </div>
-            <span class="chat-time">09:27 AM</span>
-        </div>
-        <div class="chat user">
             <img class="profile-image" src="https://www.icreta.com/files/attach/images/319/275/055/8e2c1590a474a9afb78c4cb23a9af5b2.jpg">
             <div class="msg">
                 {# Text 부분 ########################################}
@@ -186,6 +116,7 @@
                 <div class="style_result">
                     <ul></ul>
                 </div>
+                <div class="text optional"></div>
                 {# 목소리 재생 부분 ########################################}
                 <div class="voice">
                     <audio controls disableRemotePlayback="false" loop="false" src="{% static "dummy/dummy_sound.mp3" %}">브라우저가 오디오를 지원하지 않습니다.</audio>
@@ -226,7 +157,13 @@
             min  = (min  < 10 ? "0" : "") + min;
             return `${hour}:${min} ${ampm}`;
         }
-        const addChat = (type, msg, list, voice) => {
+        const addChat = (data) => {
+            let type    = data["type"];
+            let msg1    = data["msg1"] || data["msg"];
+            let msg2    = data["msg2"];
+            let list    = data["list"];
+            let voice   = data["voice"];
+            let time    = data["time"] || curTime();
             let profileImage = "https://www.icreta.com/files/attach/images/319/275/055/8e2c1590a474a9afb78c4cb23a9af5b2.jpg";
 
             type = Object.values(TYPE).includes(type) ? type : TYPE.AI;
@@ -237,8 +174,8 @@
             let $chat = $tmplChat.cloneNode(true);
             $chat.querySelector(".chat").classList.add(type);
             $chat.querySelector(".profile-image").src = profileImage;
-            $chat.querySelector(".text").innerHTML = msg.replace(/\r/g,"").replace(/\n/g, "<br/>");
-            $chat.querySelector(".chat-time").innerText = curTime();
+            $chat.querySelector(".text").innerHTML = msg1.replace(/\r/g,"").replace(/\n/g, "<br/>");
+            $chat.querySelector(".chat-time").innerText = time;
 
             let $ul = $chat.querySelector("ul");
             list = list || [];
@@ -257,6 +194,9 @@
                 }
             }
 
+            if( msg2 )      $chat.querySelector(".text.optional").innerHTML = msg2;
+            else            $chat.querySelector(".text.optional").remove();
+
             if( voice )     $chat.querySelector(".voice audio").src = voice;
             else            $chat.querySelector(".voice").remove();
 
@@ -267,8 +207,28 @@
     </script>
 
     <script>
+        const firstReaction = resp => {
+            if( !resp.ok ) {
+                addChat({type:"ai", msg:"뭔가 문제가 있는거 같습니다."});
+                console.log(`ERROR : ${resp.status}`);
+            }
+            else            return resp.json();
+        }
+        const secondReaction = json => {
+            addChat(json);
+        }
         const sendQuery = (msg) => {
-            console.log("send :: "+msg)
+            const csrf = document.getElementsByName("csrfmiddlewaretoken")[0].value;
+            fetch("{% url "apiapp:ask_api" %}", {
+                method  : "POST",
+                mode    : "cors",
+                cache   : "no-cache",
+                credentials: "same-origin",
+                headers : { "Content-Type": "application/json", "X-CSRFToken" : csrf },
+                body: JSON.stringify({msg:msg}),
+            })
+            .then(firstReaction)
+            .then(secondReaction);
         }
     </script>
 
@@ -277,8 +237,13 @@
         const $sendBtn   = document.querySelector(".chatbox a");
         $sendBtn.addEventListener("click", e => {
             const msg = $userInput.value;
+            const param = {
+                "type"  : TYPE.USER,
+                "msg1"  : msg,
+            };
+
             sendQuery(msg);
-            addChat(TYPE.USER, msg)
+            addChat(param);
             $userInput.value = "";
         });
 
@@ -286,5 +251,7 @@
             let isEnter = e.key === "Enter";
             e.ctrlKey && isEnter && $sendBtn.click();
         });
+        $userInput.addEventListener("focus", e => e.target.placeholder = "");
+        $userInput.addEventListener("blur" , e => e.target.placeholder = "메시지를 입력하세요.");
     </script>
 {% endblock script %}

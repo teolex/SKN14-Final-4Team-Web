@@ -30,6 +30,7 @@ INSTALLED_APPS  = [
     "mainapp",
     "userapp",
     "mailapp",
+    "apiapp",
 ]
 MIDDLEWARE      = [
     'django.middleware.security.SecurityMiddleware',
@@ -89,7 +90,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 STATIC_URL = 'static/'
 STATICFILES_DIRS = [
     BASE_DIR / "static",
-    BASE_DIR / "userapp" / "static"
+    # BASE_DIR / "userapp" / "static"
 ]
 
 MEDIA_URL  = '/media/'
