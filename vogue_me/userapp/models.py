@@ -19,15 +19,11 @@ class Member(models.Model):
 
     @classmethod
     def add_new_user(cls, email, first_name, last_name):
-        user = User(username=email, email=email, first_name=first_name, last_name=last_name)
-        user.set_unusable_password()
-        user.save()
-        return user
+        return User.objects.create(username=email, email=email, first_name=first_name, last_name=last_name)
 
     @classmethod
     def add_new_member(cls, user, sns_type, height=0, birthday=timezone.now(), photo_url="/static/default_user.jpg"):
-        member = Member.objects.create(user=user, sns_type=sns_type, photo_url=photo_url, height=height, birthday=birthday)
-        return member
+        return Member.objects.create(user=user, sns_type=sns_type, photo_url=photo_url, height=height, birthday=birthday)
 
     def is_authed(self):
         return "Y" == self.authed
