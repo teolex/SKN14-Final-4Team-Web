@@ -2,12 +2,10 @@ import json
 
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
-from django.shortcuts import render
 
 from apiapp.models import ChatHistory
+from mainapp.models.like import Like
 
-
-# Create your views here.
 
 @login_required
 def ask_api(request):
@@ -55,3 +53,17 @@ def _get_result(msg:str) -> dict:
     dummy_json = os.path.join(settings.BASE_DIR, "static/dummy", 'dummy_result.json')
     with open(dummy_json, "r", encoding="utf-8") as f:
         return json.load(f)
+
+
+@login_required
+def like_api(request, search_id):
+    user_id = request.user.id
+    like = Like.objects.filter(search_id=search_id, user_id=user_id)
+    if like.exists():
+        like.delete()
+        result = { "like" : False }
+    else:
+        Like.objects.create(search_id=search_id, user_id=user_id)
+        result = { "like" : True }
+
+    return JsonResponse(result)
