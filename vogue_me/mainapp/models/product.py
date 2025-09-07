@@ -9,7 +9,6 @@ from django.db import models
 
 
 class AppProduct(models.Model):
-    id                  = models.IntegerField(blank=True, null=True, primary_key=True)
     name                = models.CharField(max_length=255, blank=True, null=True)
     image_url           = models.CharField(max_length=200, blank=True, null=True)
     spec                = models.TextField(blank=True, null=True)

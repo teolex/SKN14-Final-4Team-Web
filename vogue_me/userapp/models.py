@@ -10,7 +10,7 @@ from mainapp.models.influencer import Influencer
 class Member(models.Model):
     user      = models.OneToOneField(User, on_delete=models.CASCADE, primary_key=True, related_name="member")
     height    = models.FloatField(null=False, default=0)
-    birthday  = models.DateField(null=False, default=timezone.now())
+    birthday  = models.DateField(null=False, default=timezone.now)
     authed    = models.CharField(max_length=1, choices=[("Y","인증됨"),("N","미인증")], default="N")
     sns_type  = models.CharField(max_length=10)
     photo_url = models.CharField(max_length=256, null=False, default="/static/default_user.jpg")

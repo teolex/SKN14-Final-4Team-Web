@@ -18,3 +18,6 @@ class ChatHistory(models.Model):
     @property
     def time(self):
         return self.talked_at.strftime("%H:%M %p")
+
+    class Meta:
+        ordering = ['-talked_at']

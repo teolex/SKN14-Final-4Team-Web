@@ -9,9 +9,8 @@ from django.db import models
 
 
 class SearchHistory(models.Model):
-    id              = models.IntegerField(blank=True, null=True, primary_key=True)
     user_id         = models.IntegerField(blank=True, null=True)
-    look_name       = models.CharField(max_length=256, blank=True, null=True)
+    look_style      = models.CharField(max_length=256, blank=True, null=True)
     look_img_url    = models.CharField(max_length=300, blank=True, null=True)
     look_desc       = models.TextField(blank=True, null=True)
     searched_at     = models.DateTimeField(blank=True, null=True)

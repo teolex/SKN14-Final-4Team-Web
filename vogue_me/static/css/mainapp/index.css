@@ -89,12 +89,19 @@
   border:1px solid lightgray;
   border-radius:40px;
 }
+#chat-area .chat .msgbox {
+  max-width:65%;
+  min-width:70px;
+}
+#chat-area .chat .msgbox .talker-name {
+  font-size:14px;
+  margin-bottom:10px;
+}
 #chat-area .chat .msg {
   border-radius:20px;
   box-shadow:0 8px 20px -6px black;
   padding:10px;
-  max-width:65%;
-  min-width:70px;
+  width:100%;
 }
 
 
@@ -162,7 +169,9 @@
   margin:15px 0 25px;
 }
 
-
+#chat-area .chat.ai .talker-name {
+  text-align:left;
+}
 #chat-area .chat.ai .msg {
   background-color:#F2F7FB;
   border-top-left-radius:0;
@@ -170,6 +179,9 @@
 
 #chat-area .chat.user {
   flex-direction:row-reverse;
+}
+#chat-area .chat.user .talker-name {
+  text-align:right;
 }
 #chat-area .chat.user .msg {
   background-color:#20A090;
@@ -231,6 +243,7 @@
   position:fixed;
   bottom:0;
   z-index:99;
+  background-color: white;
 }
 
 #typing-area img {
