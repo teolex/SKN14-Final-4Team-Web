@@ -15,21 +15,23 @@
     <div id="top-area">
         <span class="profile-image-wrap">
             <a href="javascript:;" class="profile-image">
-                <img src="https://www.icreta.com/files/attach/images/319/275/055/8e2c1590a474a9afb78c4cb23a9af5b2.jpg">
+                <img src="{{ last_ai.image }}">
             </a>
             <p class="dot green"></p>
         </span>
         <span class="profile-name-wrap">
-            <div>진경</div>
+            <div>{{ last_ai.name }}</div>
             <div class="profile-state">Active now</div>
         </span>
     </div>
     <div id="chat-area">
         <div class="chat ai">
-            <img class="profile-image" src="https://www.icreta.com/files/attach/images/319/275/055/8e2c1590a474a9afb78c4cb23a9af5b2.jpg">
-            <div class="msg">
-                {# Text 부분 ########################################}
-                <div class="text">
+            <img class="profile-image" src="{{ last_ai.image}}">
+            <div class="msgbox">
+                <div class="talker-name">{{ last_ai.name }}</div>
+                <div class="msg">
+                    {# Text 부분 ########################################}
+                    <div class="text">
 <pre>
 감사합니다, 지훈님! 🎉
 말씀해주신 정보 꼼꼼히 확인했어요 😊
@@ -44,56 +46,58 @@
 
 원하시는 방향을 알려주시면, 진경이가 센스 있게 코디를 골라드릴게요 💫
 </pre>
+                    </div>
+                    {# 검색된 룩 조회 부분 ########################################}
+                    <div class="style_result">
+                        <ul>
+                            <li>
+                                <a class="look-link" href="{% url "mainapp:detail" 1 %}">
+                                    <div>
+                                        <img class="look-image" src="{% static "images/dummy/dummy_look_1.jpg" %}">
+                                        <div class="inner-shadow"></div>
+                                    </div>
+                                    <span class="look-name">스마트 캐주얼</span>
+                                    <span class="look-desc">💼 클래식하고 단정한 재활용울 수트룩</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a class="look-link" href="{% url "mainapp:detail" 2 %}">
+                                    <div>
+                                        <img class="look-image" src="{% static "images/dummy/dummy_look_2.jpg" %}">
+                                        <div class="inner-shadow"></div>
+                                    </div>
+                                    <span class="look-name">미니멀 테일러드</span>
+                                    <span class="look-desc">✨ 가볍고 활동성 높은 리사이클 셋업룩</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a class="look-link" href="{% url "mainapp:detail" 3 %}">
+                                    <div>
+                                        <img class="look-image" src="{% static "images/dummy/dummy_look_1.jpg" %}">
+                                        <div class="inner-shadow"></div>
+                                    </div>
+                                    <span class="look-name">스마트 캐주얼</span>
+                                    <span class="look-desc">💼 클래식하고 단정한 재활용울 수트룩</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                    {# 목소리 재생 부분 ########################################}
+                    <div class="voice">
+                        {#                    <div class="play_btn"><img src="{% static "images/chatroom/play_btn.svg" %}"></div>#}
+                        {#                    <ul class="sound-wave"></ul>#}
+                        {#                    <span class="time-laps">00:34</span>#}
+                        <audio controls disableRemotePlayback="false" loop="false" src="{% static "dummy/dummy_sound.mp3" %}">브라우저가 오디오를 지원하지 않습니다.</audio>
+                    </div>
+                    {#                <div class="custom-audio-player">#}
+                    {#                    <button id="playPauseButton">Play</button>#}
+                    {#                    <input type="range" id="volumeSlider" min="0" max="1" step="0.01" value="1">#}
+                    {#                    <input type="range" id="progressBar" min="0" max="100" value="0">#}
+                    {#                    <span id="currentTime">0:00</span> / <span id="duration">0:00</span>#}
+                    {#                </div>#}
                 </div>
-                {# 검색된 룩 조회 부분 ########################################}
-                <div class="style_result">
-                    <ul>
-                        <li>
-                            <a class="look-link" href="{% url "mainapp:detail" 1 %}">
-                                <div>
-                                    <img class="look-image" src="{% static "images/dummy/dummy_look_1.jpg" %}">
-                                    <div class="inner-shadow"></div>
-                                </div>
-                                <span class="look-name">스마트 캐주얼</span>
-                                <span class="look-desc">💼 클래식하고 단정한 재활용울 수트룩</span>
-                            </a>
-                        </li>
-                        <li>
-                            <a class="look-link" href="{% url "mainapp:detail" 2 %}">
-                                <div>
-                                    <img class="look-image" src="{% static "images/dummy/dummy_look_2.jpg" %}">
-                                    <div class="inner-shadow"></div>
-                                </div>
-                                <span class="look-name">미니멀 테일러드</span>
-                                <span class="look-desc">✨ 가볍고 활동성 높은 리사이클 셋업룩</span>
-                            </a>
-                        </li>
-                        <li>
-                            <a class="look-link" href="{% url "mainapp:detail" 3 %}">
-                                <div>
-                                    <img class="look-image" src="{% static "images/dummy/dummy_look_1.jpg" %}">
-                                    <div class="inner-shadow"></div>
-                                </div>
-                                <span class="look-name">스마트 캐주얼</span>
-                                <span class="look-desc">💼 클래식하고 단정한 재활용울 수트룩</span>
-                            </a>
-                        </li>
-                    </ul>
-                </div>
-                {# 목소리 재생 부분 ########################################}
-                <div class="voice">
-{#                    <div class="play_btn"><img src="{% static "images/chatroom/play_btn.svg" %}"></div>#}
-{#                    <ul class="sound-wave"></ul>#}
-{#                    <span class="time-laps">00:34</span>#}
-                    <audio controls disableRemotePlayback="false" loop="false" src="{% static "dummy/dummy_sound.mp3" %}">브라우저가 오디오를 지원하지 않습니다.</audio>
-                </div>
-{#                <div class="custom-audio-player">#}
-{#                    <button id="playPauseButton">Play</button>#}
-{#                    <input type="range" id="volumeSlider" min="0" max="1" step="0.01" value="1">#}
-{#                    <input type="range" id="progressBar" min="0" max="100" value="0">#}
-{#                    <span id="currentTime">0:00</span> / <span id="duration">0:00</span>#}
-{#                </div>#}
             </div>
+
             <span class="chat-time">09:27 AM</span>
         </div>
     </div>
@@ -108,21 +112,23 @@
 
     <template id="tmpl-chat">
         <div class="chat">
-            <img class="profile-image" src="">
-            <div class="msg">
-                {# Text 부분 ########################################}
-                <div class="text"></div>
-                {# 검색된 룩 조회 부분 ########################################}
-                <div class="style_result">
-                    <ul></ul>
-                </div>
-                <div class="text optional"></div>
-                {# 목소리 재생 부분 ########################################}
-                <div class="voice">
-                    <audio controls disableRemotePlayback="false" loop="false" src="{% static "dummy/dummy_sound.mp3" %}">브라우저가 오디오를 지원하지 않습니다.</audio>
+            <img class="profile-image" src="{# 이미지 주소 #}">
+            <div class="msgbox">
+                <div class="talker-name">{# 화자 이름 #}</div>
+                <div class="msg">
+                    {# Text 부분 ########################################}
+                    <div class="text">{# 대화 내용 #}</div>
+                    {# 검색된 룩 조회 부분 ########################################}
+                    <div class="style_result">
+                        <ul>{# 스타일 정보를 li 로 묶음 #}</ul>
+                    </div>
+                    <div class="text optional">{# 추가 텍스트 #}</div>
+                    <div class="voice">
+                        <audio controls disableRemotePlayback="false" loop="false" src="{% static "dummy/dummy_sound.mp3" %}">브라우저가 오디오를 지원하지 않습니다.</audio>
+                    </div>
                 </div>
             </div>
-            <span class="chat-time">09:27 AM</span>
+            <span class="chat-time">{# 대화 시간 #}</span>
         </div>
     </template>
     <template id="tmpl-style">
@@ -164,16 +170,19 @@
             let list    = data["list"];
             let voice   = data["voice"];
             let time    = data["time"] || curTime();
-            let profileImage = "https://www.icreta.com/files/attach/images/319/275/055/8e2c1590a474a9afb78c4cb23a9af5b2.jpg";
+            let profileImage = "{{ last_ai.image }}";
+            let talkerName   = "{{ last_ai.name }}";
 
             type = Object.values(TYPE).includes(type) ? type : TYPE.AI;
             if( type === TYPE.USER ) {
-                profileImage = "user_profile_image.jpg";
+                profileImage = "{{ user.member.photo_url }}";
+                talkerName   = "{{ user.first_name }}";
             }
 
-            let $chat = $tmplChat.cloneNode(true);
-            $chat.querySelector(".chat").classList.add(type);
+            let $chat = $tmplChat.cloneNode(true).querySelector(".chat");
+            $chat.classList.add(type);
             $chat.querySelector(".profile-image").src = profileImage;
+            $chat.querySelector(".talker-name").innerText = talkerName;
             $chat.querySelector(".text").innerHTML = msg1.replace(/\r/g,"").replace(/\n/g, "<br/>");
             $chat.querySelector(".chat-time").innerText = time;
 
@@ -201,6 +210,7 @@
             else            $chat.querySelector(".voice").remove();
 
             $room.appendChild($chat);
+            $chat.scrollIntoView({behavior:"smooth", block:"end"});
         }
 
         Object.freeze(TYPE);
