@@ -7,11 +7,12 @@
 # Feel free to rename the models, but don't rename db_table values or field names.
 from django.db import models
 
+from .product import AppProduct
+
 
 class SearchHistoryProduct(models.Model):
-    id = models.IntegerField(blank=True, null=True)
     search_id = models.IntegerField(blank=True, null=True)
-    product_id = models.IntegerField(blank=True, null=True)
+    product = models.ForeignKey(AppProduct, on_delete=models.CASCADE)
 
     class Meta:
         managed = False
