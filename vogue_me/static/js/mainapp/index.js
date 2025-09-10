@@ -8,9 +8,8 @@ const curTime = () => {
     let now  = new Date();
     let hour = now.getHours();
     let min  = now.getMinutes();
-    let ampm;
+    let ampm = hour >= 12 ? "PM" : "AM";
 
-    ampm = hour >= 12 ? "PM" : "AM";
     hour = (hour < 10 ? "0" : "") + hour;
     min  = (min  < 10 ? "0" : "") + min;
     return `${hour}:${min} ${ampm}`;
