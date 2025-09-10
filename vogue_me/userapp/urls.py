@@ -22,4 +22,11 @@ urlpatterns = [
     path('password_change/', auth_views.PasswordChangeView.as_view(), name='password_change'),
     path('password_change/done/', v.password_change_done, name='password_change_done'),
     path('logout', v.logout, name="logout"),
+
+    # path('mypage/', v.mypage, name='mypage'),
+    # path('mypage/likes/', v.mypage_likes, name='mypage_likes'),
+    # path('mypage/chats/', v.mypage_chats, name='mypage_chats'),
+    path('mypage/profile/', v.mypage_profile, name='mypage_profile'),
+    path('mypage/profile/edit/', v.profile_edit, name='profile_edit'),
+    # path('api/like-post/', v.toggle_like, name='toggle_like'),
 ]

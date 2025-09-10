@@ -1,21 +1,20 @@
 import json
 
 from django.conf import settings
-from django.contrib import auth
+from django.contrib import auth, messages
 from django.contrib.auth import login
-from django.contrib.auth.models import User
+from django.contrib.auth.decorators import login_required
 from django.db import transaction
 from django.http import JsonResponse, HttpResponse
-from django.shortcuts import render, redirect
-from django.urls import reverse
+from django.shortcuts import render, redirect, get_object_or_404
+from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.http import require_POST
 
 from mailapp.models import *
-from .models import RegisterUserForm, Member
+from .models import RegisterUserForm, Member, ModifyUserForm, ModifyMemberForm
 from .sns_login.google import Google
 from .sns_login.kakao import Kakao
 from .sns_login.naver import Naver
-
-
 
 google = Google()
 kakao  = Kakao()
@@ -105,3 +104,43 @@ def password_change_done(request):
 def logout(request):
     _logout(request)
     return redirect("userapp:signin_or_up")
+
+
+@login_required
+def profile_edit(request):
+    context = { 'main_active_tab': "mypage", "mypage_active_tab": "profile" }
+    user   = request.user
+    member = get_object_or_404(Member, user=user)
+
+    if request.method == 'POST':
+        user_form   = ModifyUserForm(request.POST, instance=user)
+        member_form = ModifyMemberForm(request.POST, instance=member)
+
+        if user_form.is_valid() and member_form.is_valid():
+            user_form.save()
+            member_form.save()
+            messages.success(request, '프로필이 성공적으로 업데이트되었습니다.')
+            return redirect('userapp:mypage_profile')
+        else:
+            context["edit_mode"] = True
+            messages.error(request, '입력하신 값을 확인해주세요.')
+
+    return render(request, 'app/userapp/mypage.html', context)
+
+def mypage_profile(request):
+    context = { 'main_active_tab': "mypage", "mypage_active_tab": "profile" }
+    return render(request, 'app/mainapp/main.html', context)
+
+@csrf_exempt
+@require_POST
+def toggle_like(request):
+    if not request.user.is_authenticated:
+        return JsonResponse({'error': 'Authentication required'}, status=401)
+
+    try:
+        data = json.loads(request.body)
+        post_id = data.get('post_id')
+        # 실제로는 Like 모델과 상호작용
+        return JsonResponse({'success': True, 'liked': True})
+    except:
+        return JsonResponse({'error': 'Invalid request'}, status=400)
