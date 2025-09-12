@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>진경 AI 어시스턴트 온보딩</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 400px;
+            width: 100%;
+            position: relative;
+        }
+
+        .ai-card {
+            background: #3a4a5c;
+            border-radius: 20px;
+            padding: 20px;
+            text-align: center;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+
+        .profile-image {
+            width: 120px;
+            height: 120px;
+            border-radius: 15px;
+            background: #d4c4a8;
+            margin: 0 auto 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .profile-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .ai-name {
+            color: white;
+            font-size: 24px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .leaf-icon {
+            color: #4ade80;
+            font-size: 20px;
+        }
+
+        .play-button {
+            width: 50px;
+            height: 50px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 20px auto 0;
+            cursor: pointer;
+        }
+
+        .play-button::before {
+            content: '';
+            width: 0;
+            height: 0;
+            border-left: 12px solid white;
+            border-top: 8px solid transparent;
+            border-bottom: 8px solid transparent;
+            margin-left: 3px;
+        }
+
+        .survey-card {
+            background: linear-gradient(135deg, #48cc6c 0%, #2dd4bf 100%);
+            border-radius: 25px;
+            padding: 30px 25px;
+            color: white;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .survey-card.complete {
+            background: linear-gradient(135deg, #fbbf24 0%, #48cc6c 100%);
+        }
+
+        .close-button {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 30px;
+            height: 30px;
+            cursor: pointer;
+            opacity: 0.7;
+        }
+
+        .close-button::before,
+        .close-button::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 20px;
+            height: 2px;
+            background: white;
+            transform: translate(-50%, -50%) rotate(45deg);
+        }
+
+        .close-button::after {
+            transform: translate(-50%, -50%) rotate(-45deg);
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 4px;
+            background: rgba(255,255,255,0.3);
+            border-radius: 2px;
+            margin-bottom: 25px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: white;
+            transition: width 0.3s ease;
+        }
+
+        .survey-title {
+            font-size: 18px;
+            line-height: 1.4;
+            margin-bottom: 25px;
+            font-weight: 500;
+        }
+
+        .option-group {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-bottom: 30px;
+        }
+
+        .option-button {
+            background: rgba(255,255,255,0.15);
+            border: 2px solid rgba(255,255,255,0.3);
+            color: white;
+            padding: 15px 20px;
+            border-radius: 15px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+
+        .option-button.selected {
+            background: white;
+            color: #48cc6c;
+            border-color: white;
+            font-weight: 600;
+        }
+
+        .option-button:hover {
+            background: rgba(255,255,255,0.25);
+            transform: translateY(-2px);
+        }
+
+        .option-button.selected:hover {
+            background: white;
+            transform: translateY(-2px);
+        }
+
+        .button-group {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-button {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 25px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .prev-button {
+            background: transparent;
+            color: white;
+            border: 2px solid rgba(255,255,255,0.3);
+        }
+
+        .next-button {
+            background: white;
+            color: #48cc6c;
+        }
+
+        .prev-button:hover {
+            background: rgba(255,255,255,0.1);
+        }
+
+        .next-button:hover {
+            background: #f0f0f0;
+            transform: translateY(-2px);
+        }
+
+        .complete-icon {
+            font-size: 48px;
+            margin-bottom: 20px;
+        }
+
+        .complete-title {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+
+        .complete-subtitle {
+            font-size: 16px;
+            margin-bottom: 10px;
+        }
+
+        .complete-message {
+            font-size: 16px;
+            margin-bottom: 30px;
+        }
+
+        .input-field {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid rgba(255,255,255,0.3);
+            border-radius: 15px;
+            background: rgba(255,255,255,0.15);
+            color: white;
+            font-size: 16px;
+            margin-bottom: 30px;
+        }
+
+        .input-field::placeholder {
+            color: rgba(255,255,255,0.7);
+        }
+
+        .input-field:focus {
+            outline: none;
+            border-color: white;
+            background: rgba(255,255,255,0.25);
+        }
+
+        .final-button {
+            background: white;
+            color: #48cc6c;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 25px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+        }
+
+        .final-button:hover {
+            background: #f0f0f0;
+            transform: translateY(-2px);
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        /* 애니메이션 */
+        .survey-card {
+            animation: slideUp 0.4s ease-out;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- AI 프로필 카드 -->
+        <div class="ai-card">
+            <div class="profile-image">
+                <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='50' fill='%23d4c4a8'/%3E%3Ccircle cx='35' cy='40' r='3' fill='%23333'/%3E%3Ccircle cx='65' cy='40' r='3' fill='%23333'/%3E%3Cpath d='M35 60 Q50 70 65 60' stroke='%23333' stroke-width='2' fill='none'/%3E%3C/svg%3E" alt="AI 어시스턴트 진경">
+            </div>
+            <div class="ai-name">
+                진경 <span class="leaf-icon">🌿</span>
+            </div>
+            <div class="play-button"></div>
+        </div>
+
+        <!-- 서베이 1: 초기 소개 -->
+        <div id="survey1" class="survey-card">
+            <div class="close-button"></div>
+            <div class="progress-bar">
+                <div class="progress-fill" style="width: 16.6%"></div>
+            </div>
+            <div class="survey-title">
+                안녕하세요! 저는 재활용 소재로 스타일을 제안하는 LoopLabel AI 어시스턴트 진경이에요.<br><br>
+                처구를 치치면서도 맛스러운 패션을 함께 찾아드릴게요. ✨<br><br>
+                이제 몇 가지 질문으로 당신의 취향을 알아가 볼게요. 아래 [설문 시작하기] 버튼을 눌러 시작해볼까요?
+            </div>
+            <div class="button-group">
+                <div></div>
+                <button class="nav-button next-button" onclick="nextSurvey()">설문 시작하기</button>
+            </div>
+        </div>
+
+        <!-- 서베이 2: 성별 -->
+        <div id="survey2" class="survey-card hidden">
+            <div class="close-button"></div>
+            <div class="progress-bar">
+                <div class="progress-fill" style="width: 33.3%"></div>
+            </div>
+            <div class="survey-title">
+                먼저, 어떤 옷 스타일을 주로 찾으세요?
+            </div>
+            <div class="option-group">
+                <div class="option-button" onclick="selectOption(this)">여성</div>
+                <div class="option-button" onclick="selectOption(this)">남성</div>
+            </div>
+            <div class="button-group">
+                <button class="nav-button prev-button" onclick="prevSurvey()">이전</button>
+                <button class="nav-button next-button" onclick="nextSurvey()">다음</button>
+            </div>
+        </div>
+
+        <!-- 서베이 3: 연령대 -->
+        <div id="survey3" class="survey-card hidden">
+            <div class="close-button"></div>
+            <div class="progress-bar">
+                <div class="progress-fill" style="width: 50%"></div>
+            </div>
+            <div class="survey-title">
+                연령대를 알려주시면, 더 잘 맞는 스타일을 제안드릴 수 있어요.
+            </div>
+            <div class="option-group">
+                <div class="option-button" onclick="selectOption(this)">20대</div>
+                <div class="option-button" onclick="selectOption(this)">30대</div>
+                <div class="option-button" onclick="selectOption(this)">40대 이상</div>
+            </div>
+            <div class="button-group">
+                <button class="nav-button prev-button" onclick="prevSurvey()">이전</button>
+                <button class="nav-button next-button" onclick="nextSurvey()">다음</button>
+            </div>
+        </div>
+
+        <!-- 서베이 4: 스타일 가이드 -->
+        <div id="survey4" class="survey-card hidden">
+            <div class="close-button"></div>
+            <div class="progress-bar">
+                <div class="progress-fill" style="width: 66.6%"></div>
+            </div>
+            <div class="survey-title">
+                평소 좋아하는 스타일 키워드를 골라주세요.
+            </div>
+            <div class="option-group">
+                <div class="option-button" onclick="selectOption(this)">미니멀 (깔끔, 심플)</div>
+                <div class="option-button" onclick="selectOption(this)">캐쥬얼 (편안, 데일리)</div>
+                <div class="option-button" onclick="selectOption(this)">포멀 (정장, 단정)</div>
+                <div class="option-button" onclick="selectOption(this)">페미닌 (부드럽고 여성스러움)</div>
+                <div class="option-button" onclick="selectOption(this)">스트리트 (트렌디, 자유분방)</div>
+            </div>
+            <div class="button-group">
+                <button class="nav-button prev-button" onclick="prevSurvey()">이전</button>
+                <button class="nav-button next-button" onclick="nextSurvey()">다음</button>
+            </div>
+        </div>
+
+        <!-- 서베이 5: 선호하는 소재 -->
+        <div id="survey5" class="survey-card hidden">
+            <div class="close-button"></div>
+            <div class="progress-bar">
+                <div class="progress-fill" style="width: 83.3%"></div>
+            </div>
+            <div class="survey-title">
+                특별히 선호하는 소재가 있나요?
+            </div>
+            <div class="option-group">
+                <div class="option-button" onclick="selectOption(this)">재활용 플리에스터 (rPET)</div>
+                <div class="option-button" onclick="selectOption(this)">오가닉 코튼</div>
+                <div class="option-button" onclick="selectOption(this)">리사이클 울/나일론</div>
+                <div class="option-button" onclick="selectOption(this)">특별히 없음, 다양한 소재 좋아요</div>
+            </div>
+            <div class="button-group">
+                <button class="nav-button prev-button" onclick="prevSurvey()">이전</button>
+                <button class="nav-button next-button" onclick="nextSurvey()">다음</button>
+            </div>
+        </div>
+
+        <!-- 서베이 완료 -->
+        <div id="surveyComplete" class="survey-card complete hidden">
+            <div class="close-button"></div>
+            <div class="progress-bar">
+                <div class="progress-fill" style="width: 100%"></div>
+            </div>
+            <div class="complete-icon">🎉</div>
+            <div class="complete-title">설문 완료!</div>
+            <div class="complete-subtitle">
+                우리 더 친해지려면, 제가 뭐라고 불러드리면 좋을까요? 😍
+            </div>
+            <div class="complete-message">
+                닉네임을 입력하면 바로 대화가 이어져요!
+            </div>
+            <input type="text" class="input-field" placeholder="여기 닉네임을 적어주세요. 💚">
+            <div class="button-group">
+                <button class="nav-button prev-button" onclick="prevSurvey()">나중에</button>
+                <button class="final-button" onclick="completeSurvey()">완료</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentSurvey = 1;
+        const totalSurveys = 6; // 완료 화면 포함
+
+        function nextSurvey() {
+            if (currentSurvey < totalSurveys) {
+                // 현재 서베이 숨기기
+                document.getElementById(`survey${currentSurvey}`).classList.add('hidden');
+                
+                currentSurvey++;
+                
+                // 다음 서베이 보이기
+                if (currentSurvey === totalSurveys) {
+                    document.getElementById('surveyComplete').classList.remove('hidden');
+                } else {
+                    document.getElementById(`survey${currentSurvey}`).classList.remove('hidden');
+                }
+            }
+        }
+
+        function prevSurvey() {
+            if (currentSurvey > 1) {
+                // 현재 서베이 숨기기
+                if (currentSurvey === totalSurveys) {
+                    document.getElementById('surveyComplete').classList.add('hidden');
+                } else {
+                    document.getElementById(`survey${currentSurvey}`).classList.add('hidden');
+                }
+                
+                currentSurvey--;
+                
+                // 이전 서베이 보이기
+                document.getElementById(`survey${currentSurvey}`).classList.remove('hidden');
+            }
+        }
+
+        function selectOption(button) {
+            // 같은 그룹의 다른 버튼들에서 selected 클래스 제거
+            const optionGroup = button.parentElement;
+            const allButtons = optionGroup.querySelectorAll('.option-button');
+            allButtons.forEach(btn => btn.classList.remove('selected'));
+            
+            // 클릭된 버튼에 selected 클래스 추가
+            button.classList.add('selected');
+        }
+
+        function completeSurvey() {
+            const nickname = document.querySelector('.input-field').value.trim();
+            if (nickname) {
+                alert(`${nickname}님, 환영합니다! 이제 맞춤 스타일 추천을 받아보세요! 🎉`);
+                // 여기서 실제 앱의 메인 화면으로 이동하거나 다른 액션을 수행
+                location.reload(); // 데모를 위해 페이지 새로고침
+            } else {
+                alert('닉네임을 입력해주세요! 😊');
+            }
+        }
+
+        // 닫기 버튼 이벤트
+        document.addEventListener('click', function(e) {
+            if (e.target.classList.contains('close-button')) {
+                if (confirm('온보딩을 종료하시겠습니까?')) {
+                    location.reload();
+                }
+            }
+        });
+
+        // Enter 키로 다음 단계 이동
+        document.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                if (currentSurvey === totalSurveys) {
+                    completeSurvey();
+                } else {
+                    nextSurvey();
+                }
+            }
+        });
+
+        // 닉네임 입력 필드에서 Enter 키 이벤트
+        document.addEventListener('keypress', function(e) {
+            if (e.target.classList.contains('input-field') && e.key === 'Enter') {
+                completeSurvey();
+            }
+        });
+    </script>
+</body>
+</html>

@@ -57,3 +57,6 @@ def detail(request, id):
         pass
 
     return render(request, "app/mainapp/detail.html", context)
+
+def survey(request):
+    return render(request, "app/mainapp/survey.html")
