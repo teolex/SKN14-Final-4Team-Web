@@ -1,3 +1,5 @@
+from datetime import date
+
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
@@ -6,6 +8,11 @@ from django.utils import timezone
 
 from mainapp.models.influencer import Influencer
 
+GENDER_CATEGORIES = [
+    ('M', '남성'),
+    ('F', '여성'),
+    ('E', '기타'),
+]
 
 class Member(models.Model):
     user      = models.OneToOneField(User, on_delete=models.CASCADE, primary_key=True, related_name="member")
@@ -13,6 +20,8 @@ class Member(models.Model):
     birthday  = models.DateField(null=False, default=timezone.now)
     authed    = models.CharField(max_length=1, choices=[("Y","인증됨"),("N","미인증")], default="N")
     sns_type  = models.CharField(max_length=10)
+    gender    = models.CharField(max_length=10, null=True, choices=GENDER_CATEGORIES)
+    prefer    = models.CharField(max_length=100, null=True)
     photo_url = models.CharField(max_length=256, null=False, default="/static/default_user.jpg")
 
     last_ai   = models.ForeignKey(Influencer, on_delete=models.SET_NULL, null=True, default=1)
@@ -28,6 +37,17 @@ class Member(models.Model):
     def is_authed(self):
         return "Y" == self.authed
 
+    @property
+    def age(self):
+        if self.birthday:
+            today = date.today()
+            age = today.year - self.birthday.year
+            age -= ((today.month, today.day) < (self.birthday.month, self.birthday.day))
+            return age
+        return None
+
+
+
 
 
 # Create your models here.
@@ -35,6 +55,8 @@ class RegisterUserForm(UserCreationForm):
     email    = forms.EmailField(required=True)     # User 의 email 속성을 덮어쓰기 위해 선언
     height   = forms.FloatField(required=False, label="키", min_value=0)
     birthday = forms.DateField(required=False, label="생일")
+    gender   = forms.CharField(max_length=10, label="성별")
+    prefer   = forms.CharField(max_length=100, label="선호 스타일")
 
     class Meta:
         model  = User
@@ -54,3 +76,14 @@ class RegisterUserForm(UserCreationForm):
         user.save()
         return user
 
+
+
+class ModifyUserForm(forms.ModelForm):
+    class Meta:
+        model = User
+        fields = ['first_name', 'last_name']
+
+class ModifyMemberForm(forms.ModelForm):
+    class Meta:
+        model = Member
+        fields = ['birthday', "gender", "prefer"]

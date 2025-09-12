@@ -29,6 +29,9 @@ def index(request):
 
     return render(request, "app/mainapp/index.html", context)
 
+def main(request):
+    return render(request, "app/mainapp/main.html")
+
 def detail(request, id):
     if not SearchHistory.objects.filter(id=id).exists():
         return HttpResponse(status=404)
@@ -54,3 +57,6 @@ def detail(request, id):
         pass
 
     return render(request, "app/mainapp/detail.html", context)
+
+def survey(request):
+    return render(request, "app/mainapp/survey.html")
