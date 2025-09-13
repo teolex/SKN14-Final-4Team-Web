@@ -66,3 +66,7 @@ def detail(request, id):
 
 def survey(request):
     return render(request, "app/mainapp/survey.html")
+
+
+def profile(request):
+    return render(request, "app/mainapp/profile.html")
