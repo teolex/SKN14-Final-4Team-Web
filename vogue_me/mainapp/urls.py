@@ -11,4 +11,5 @@ urlpatterns = [
 
     #########
     path('survey', v.survey, name="survey"),
+    path('profile', v.profile, name="profile"),
 ]
