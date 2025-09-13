@@ -69,3 +69,7 @@ def survey(request):
 
 def chat(request):
     return render(request, "app/mainapp/chat.html")
+
+def profile(request):
+    return render(request, "app/mainapp/profile.html")
+
