@@ -657,6 +657,7 @@
         <!-- Input Area -->
         <div class="input-area">
             <div class="input-container">
+                {% csrf_token %}
                 <input 
                     type="text" 
                     class="input-field" 
@@ -703,24 +704,24 @@
                 if (hasProducts) {
                     bubbleContent += `
                         <div class="product-container">
-                        <div class="product-card" onclick="selectProduct('top')">
-                            <div class="product-image" style="background-image: url('https://ecoalf.com/cdn/shop/files/MCMGASRMALIB0725S25-125_0654_verde.jpg?v=1738937341'); background-size: cover; background-position: center;"></div>
-                                <div class="heart-icon unliked" onclick="toggleHeart(this)">🤍</div>
-                                <div class="product-info">
-                                <div class="product-title">클래식 셔츠</div>
-                                <div class="product-description">단정한 오피스룩</div>
+                            <div class="product-card" onclick="selectProduct('top')">
+                                <div class="product-image" style="background-image: url('https://ecoalf.com/cdn/shop/files/MCMGASRMALIB0725S25-125_0654_verde.jpg?v=1738937341'); background-size: cover; background-position: center;"></div>
+                                    <div class="heart-icon unliked" onclick="toggleHeart(this)">🤍</div>
+                                    <div class="product-info">
+                                    <div class="product-title">클래식 셔츠</div>
+                                    <div class="product-description">단정한 오피스룩</div>
                                 </div>
                             </div>
-                        <div class="product-card" onclick="selectProduct('bottom')">
-                            <div class="product-image" style="background-image: url('https://ecoalf.com/cdn/shop/files/MCMGAPAETHIC0753S25-143_0555.jpg?v=1738239393'); background-size: cover; background-position: center;"></div>
-                                <div class="heart-icon unliked" onclick="toggleHeart(this)">🤍</div>
-                                <div class="product-info">
-                                    <div class="product-title">슬랙스</div>
-                                    <div class="product-description">깔끔고 활동성 높은 라이 사이즈 솔원 룩</div>
+                            <div class="product-card" onclick="selectProduct('bottom')">
+                                <div class="product-image" style="background-image: url('https://ecoalf.com/cdn/shop/files/MCMGAPAETHIC0753S25-143_0555.jpg?v=1738239393'); background-size: cover; background-position: center;"></div>
+                                    <div class="heart-icon unliked" onclick="toggleHeart(this)">🤍</div>
+                                    <div class="product-info">
+                                        <div class="product-title">슬랙스</div>
+                                        <div class="product-description">깔끔고 활동성 높은 라이 사이즈 솔원 룩</div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
                 `;
                 }
                 messageContent = `
@@ -813,6 +814,7 @@
         }
 
         // 메시지 전송 함수
+        const $csrf  = document.getElementsByName("csrfmiddlewaretoken")[0];
         function sendMessage() {
             const messageInput = document.getElementById('messageInput');
             const messageText = messageInput.value.trim();
@@ -825,12 +827,25 @@
             
             // AI 응답 시뮬레이션
             showTypingIndicator();
-            
+
+            {#fetch("http://looplabel-api.ap-northeast-2.elasticbeanstalk.com/api/ask", {#}
+            fetch("http://www.local.com:80/api/ask", {
+                method : "POST",
+                cache  : "no-cache",
+                headers: { "Content-Type": "application/json", "X-CSRFToken": $csrf.value },
+                body: JSON.stringify({ query : messageText, user_id : {% if user.is_authenticated %}{{ user.id }}{% else %}1{% endif %} })
+            }).then(resp => { return resp.text();
+            }).then(text => {
+                hideTypingIndicator();
+                addMessage(text, false)
+            })
+
+            /*
             setTimeout(() => {
                 hideTypingIndicator();
                 const response = simulateAIResponse(messageText);
                 addMessage(response.text, false, response.hasProducts);
-                
+
                 // AI 메시지 생성 후 자동으로 음성 스트리밍 재생 (전역 설정이 켜져있을 때만)
                 if (globalVoiceEnabled) {
                     setTimeout(() => {
@@ -838,6 +853,7 @@
                     }, 500);
                 }
             }, 1500 + Math.random() * 1000);
+            */
         }
 
         // 음성 스트리밍 시작 (백그라운드에서 자동 재생)
