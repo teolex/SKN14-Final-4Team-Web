@@ -1,0 +1,720 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>프로필</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background-color: #f5f5f5;
+            color: #333;
+        }
+
+        .mobile-container {
+            max-width: 375px;
+            margin: 0 auto;
+            background-color: white;
+            min-height: 100vh;
+            position: relative;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            padding-bottom: 80px; /* 저장 버튼 공간 확보 */
+        }
+
+        /* Header */
+        .header {
+            display: flex;
+            align-items: center;
+            padding: 15px 20px;
+            background-color: white;
+            border-bottom: 1px solid #e0e0e0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .back-btn {
+            background: none;
+            border: none;
+            font-size: 18px;
+            cursor: pointer;
+            margin-right: 15px;
+        }
+
+        .header-title {
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        /* Profile Avatar */
+        .profile-avatar {
+            display: flex;
+            justify-content: center;
+            padding: 40px 0 30px;
+        }
+
+        .avatar-circle {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background-color: #2c3e50;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 40px;
+        }
+
+        /* Form Fields */
+        .form-group {
+            margin: 0 20px 20px;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 14px;
+            color: #666;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 15px;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 16px;
+            background-color: #f8f8f8;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: #007AFF;
+            background-color: white;
+        }
+
+        .form-input:read-only {
+            background-color: #f0f0f0;
+            color: #999;
+        }
+
+        /* Menu Items */
+        .menu-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 18px 20px;
+            border-bottom: 1px solid #f0f0f0;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .menu-item:hover {
+            background-color: #f8f8f8;
+        }
+
+        .menu-item-text {
+            font-size: 16px;
+        }
+
+        .menu-arrow {
+            color: #999;
+            font-size: 18px;
+        }
+
+        /* Save Button Container */
+        .save-button-container {
+            position: fixed;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100%;
+            max-width: 375px;
+            padding: 15px 20px;
+            background-color: white;
+            border-top: 1px solid #e0e0e0;
+            z-index: 100;
+        }
+
+        .save-button {
+            width: 100%;
+            background-color: #00C896;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            padding: 15px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .save-button:hover {
+            background-color: #00b085;
+        }
+
+        .save-button:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
+
+        /* Modal Overlay */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0,0,0,0.5);
+            z-index: 1000;
+            display: none;
+            align-items: flex-end;
+            justify-content: center;
+        }
+
+        .modal-overlay.show {
+            display: flex !important;
+        }
+
+        /* Modal Container */
+        .modal-container {
+            background-color: white;
+            border-radius: 20px 20px 0 0;
+            width: 100%;
+            max-width: 375px;
+            max-height: 80vh;
+            overflow-y: auto;
+            animation: slideUp 0.3s ease-out;
+        }
+
+        @keyframes slideUp {
+            from {
+                transform: translateY(100%);
+            }
+            to {
+                transform: translateY(0);
+            }
+        }
+
+        /* Modal Header */
+        .modal-header {
+            position: relative;
+            padding: 20px;
+            text-align: center;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .modal-title {
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .modal-close {
+            position: absolute;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: #999;
+        }
+
+        /* Modal Content */
+        .modal-content {
+            padding: 20px;
+        }
+
+        .modal-question {
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 16px;
+            color: #333;
+        }
+
+        /* Selection Options */
+        .selection-options {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            justify-content: center;
+            margin-bottom: 30px;
+        }
+
+        .option-btn {
+            padding: 12px 24px;
+            border: 2px solid #e0e0e0;
+            border-radius: 25px;
+            background-color: white;
+            color: #666;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .option-btn:hover {
+            border-color: #00C896;
+            color: #00C896;
+        }
+
+        .option-btn.selected {
+            border-color: #00C896;
+            background-color: #00C896;
+            color: white;
+        }
+
+        /* Toast Message */
+        .toast {
+            position: fixed;
+            bottom: 100px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #333;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 24px;
+            font-size: 14px;
+            opacity: 0;
+            transition: opacity 0.3s;
+            z-index: 2000;
+            pointer-events: none;
+        }
+
+        .toast.show {
+            opacity: 0.9;
+        }
+
+        /* Hidden class */
+        .hidden {
+            display: none !important;
+        }
+    </style>
+</head>
+<body>
+    <div class="mobile-container">
+        <!-- Header -->
+        <div class="header">
+            <button class="back-btn">‹</button>
+            <div class="header-title">프로필</div>
+        </div>
+
+        <!-- Profile Avatar -->
+        <div class="profile-avatar">
+            <div class="avatar-circle">
+                👤
+            </div>
+        </div>
+
+        <!-- Form Fields -->
+        <div class="form-group">
+            <label class="form-label"></label>
+            <div style="position: relative; display: flex; align-items: center;">
+                <span style="position: absolute; left: 12px; z-index: 1; font-size: 16px;">👤</span>
+                <input type="text" class="form-input" id="name-input" style="padding-left: 50px;" placeholder="이름을 입력하세요">
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="form-label"></label>
+            <div style="position: relative; display: flex; align-items: center; background: #f8f8f8; border: 1px solid #e0e0e0; border-radius: 8px; padding: 12px;">
+                <span style="position: absolute; left: 12px; z-index: 1; font-size: 16px;">📅</span>
+                <div style="display: flex; width: 100%; padding-left: 40px; gap: 10px;">
+                    <select id="birth-month" style="flex: 1; border: none; outline: none; font-size: 16px; background: transparent; color: #666;">
+                        <option value="01" selected>01</option>
+                    </select>
+                    <span style="align-self: center; font-size: 16px; color: #666;">M</span>
+                    <select id="birth-day" style="flex: 1; border: none; outline: none; font-size: 16px; background: transparent; color: #666;">
+                        <option value="01" selected>01</option>
+                    </select>
+                    <span style="align-self: center; font-size: 16px; color: #666;">D</span>
+                    <select id="birth-year" style="flex: 1; border: none; outline: none; font-size: 16px; background: transparent; color: #666;">
+                    </select>
+                    <span style="align-self: center; font-size: 16px; color: #666;">Y</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="form-label"></label>
+            <div style="position: relative; display: flex; align-items: center;">
+                <span style="position: absolute; left: 12px; z-index: 1; font-size: 16px;">✉️</span>
+                <input type="email" class="form-input" value="helloworld@mail.com" readonly style="padding-left: 40px;">
+            </div>
+        </div>
+
+        <!-- Menu Items -->
+        <div class="menu-item" onclick="openGenderModal()">
+            <span class="menu-item-text" id="gender-text">남성</span>
+            <span class="menu-arrow">›</span>
+        </div>
+
+        <div class="menu-item" onclick="openStyleModal()">
+            <span class="menu-item-text" id="style-text">캐주얼 (편안, 데일리)</span>
+            <span class="menu-arrow">›</span>
+        </div>
+
+        <div class="menu-item" onclick="openFabricModal()">
+            <span class="menu-item-text" id="fabric-text">오가닉 코튼</span>
+            <span class="menu-arrow">›</span>
+        </div>
+
+        <!-- Save Button -->
+        <div class="save-button-container">
+            <button class="save-button" onclick="saveProfile()" disabled>저장하기</button>
+        </div>
+    </div>
+
+    <!-- Gender Selection Modal -->
+    <div class="modal-overlay" id="gender-modal">
+        <div class="modal-container">
+            <div class="modal-header">
+                <h3 class="modal-title">성별</h3>
+                <button class="modal-close" onclick="closeModal('gender-modal')">×</button>
+            </div>
+            <div class="modal-content">
+                <div class="modal-question">성별을 어떻게 되시나요?</div>
+                <div class="selection-options">
+                    <button class="option-btn selected" data-value="남성" onclick="selectGender(this)">남성</button>
+                    <button class="option-btn" data-value="여성" onclick="selectGender(this)">여성</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Style Selection Modal -->
+    <div class="modal-overlay" id="style-modal">
+        <div class="modal-container">
+            <div class="modal-header">
+                <h3 class="modal-title">선호 스타일</h3>
+                <button class="modal-close" onclick="closeModal('style-modal')">×</button>
+            </div>
+            <div class="modal-content">
+                <div class="modal-question">평소에 자주 입으시는 스타일이 있으시나요?</div>
+                <div class="selection-options">
+                    <button class="option-btn" data-value="미니멀" onclick="selectStyle(this)">미니멀</button>
+                    <button class="option-btn selected" data-value="캐주얼" onclick="selectStyle(this)">캐주얼</button>
+                    <button class="option-btn" data-value="포멀" onclick="selectStyle(this)">포멀</button>
+                    <button class="option-btn" data-value="페미닌" onclick="selectStyle(this)">페미닌</button>
+                    <button class="option-btn" data-value="스트릿" onclick="selectStyle(this)">스트릿</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Fabric Selection Modal -->
+    <div class="modal-overlay" id="fabric-modal">
+        <div class="modal-container">
+            <div class="modal-header">
+                <h3 class="modal-title">선호 소재</h3>
+                <button class="modal-close" onclick="closeModal('fabric-modal')">×</button>
+            </div>
+            <div class="modal-content">
+                <div class="modal-question">평소에 자주 입으시는 소재가 있으시나요?</div>
+                <div class="selection-options">
+                    <button class="option-btn" data-value="재활용 폴리에스터" onclick="selectFabric(this)">재활용 폴리에스터</button>
+                    <button class="option-btn selected" data-value="오가닉 코튼" onclick="selectFabric(this)">오가닉 코튼</button>
+                    <button class="option-btn" data-value="리사이클 울 / 나일론" onclick="selectFabric(this)">리사이클 울 / 나일론</button>
+                    <button class="option-btn" data-value="소재 무관" onclick="selectFabric(this)">소재 무관</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Message -->
+    <div class="toast" id="toast"></div>
+
+    <script>
+        // 프로필 데이터를 저장할 객체
+        let profileData = {
+            name: '',
+            birthDate: {
+                year: '1995',
+                month: '01',
+                day: '01'
+            },
+            email: 'helloworld@mail.com',
+            gender: '남성',
+            style: '캐주얼',
+            fabric: '오가닉 코튼'
+        };
+
+        // 초기 데이터를 저장하여 변경사항 비교용
+        let originalData = {
+            name: '',
+            birthDate: {
+                year: '1995',
+                month: '01',
+                day: '01'
+            },
+            email: 'helloworld@mail.com',
+            gender: '남성',
+            style: '캐주얼',
+            fabric: '오가닉 코튼'
+        };
+
+        // 변경사항 감지 함수
+        function hasChanges() {
+            return (
+                profileData.name !== originalData.name ||
+                profileData.birthDate.year !== originalData.birthDate.year ||
+                profileData.birthDate.month !== originalData.birthDate.month ||
+                profileData.birthDate.day !== originalData.birthDate.day ||
+                profileData.gender !== originalData.gender ||
+                profileData.style !== originalData.style ||
+                profileData.fabric !== originalData.fabric
+            );
+        }
+
+        // 저장 버튼 상태 업데이트 함수
+        function updateSaveButton() {
+            const saveButton = document.querySelector('.save-button');
+            if (hasChanges()) {
+                saveButton.disabled = false;
+                saveButton.style.backgroundColor = '#00C896';
+                saveButton.style.cursor = 'pointer';
+            } else {
+                saveButton.disabled = true;
+                saveButton.style.backgroundColor = '#ccc';
+                saveButton.style.cursor = 'not-allowed';
+            }
+        }
+
+        // Date picker functionality
+        function initializeDatePicker() {
+            const yearSelect = document.getElementById('birth-year');
+            const monthSelect = document.getElementById('birth-month');
+            const daySelect = document.getElementById('birth-day');
+            
+            // 년도 옵션 생성 (1950-2010)
+            for (let year = 2010; year >= 1950; year--) {
+                const option = document.createElement('option');
+                option.value = year;
+                option.textContent = year;
+                if (year === 1995) option.selected = true;
+                yearSelect.appendChild(option);
+            }
+            
+            // 월 옵션 생성
+            for (let month = 2; month <= 12; month++) {
+                const option = document.createElement('option');
+                option.value = month.toString().padStart(2, '0');
+                option.textContent = month.toString().padStart(2, '0');
+                if (month === 1) option.selected = true;
+                monthSelect.appendChild(option);
+            }
+            
+            // 일 옵션 생성
+            function updateDays() {
+                const year = parseInt(yearSelect.value);
+                const month = parseInt(monthSelect.value);
+                const daysInMonth = new Date(year, month, 0).getDate();
+                
+                // 기존 옵션 제거
+                daySelect.innerHTML = '';
+                
+                // 일 옵션 생성
+                for (let day = 1; day <= daysInMonth; day++) {
+                    const option = document.createElement('option');
+                    option.value = day.toString().padStart(2, '0');
+                    option.textContent = day.toString().padStart(2, '0');
+                    if (day === 1) option.selected = true;
+                    daySelect.appendChild(option);
+                }
+            }
+            
+            // 색상 변경 함수
+            function changeColor() {
+                const container = yearSelect.closest('div').parentElement;
+                container.style.background = 'white';
+                container.style.borderColor = '#007bff';
+                [yearSelect, monthSelect, daySelect].forEach(select => {
+                    select.style.color = '#000';
+                });
+                
+                // 데이터 업데이트
+                profileData.birthDate.year = yearSelect.value;
+                profileData.birthDate.month = monthSelect.value;
+                profileData.birthDate.day = daySelect.value;
+            }
+            
+            // 월이 변경될 때 일수 업데이트
+            monthSelect.addEventListener('change', function() {
+                updateDays();
+                changeColor();
+                updateSaveButton(); // 변경사항 감지
+            });
+            yearSelect.addEventListener('change', function() {
+                updateDays();
+                changeColor();
+                updateSaveButton(); // 변경사항 감지
+            });
+            daySelect.addEventListener('change', function() {
+                changeColor();
+                updateSaveButton(); // 변경사항 감지
+            });
+            
+            // 초기 일수 설정
+            updateDays();
+        }
+
+        // Modal Functions
+        function openGenderModal() {
+            document.getElementById('gender-modal').classList.add('show');
+        }
+
+        function openStyleModal() {
+            document.getElementById('style-modal').classList.add('show');
+        }
+
+        function openFabricModal() {
+            document.getElementById('fabric-modal').classList.add('show');
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).classList.remove('show');
+        }
+
+        // Selection Functions - 선택 즉시 반영 및 모달 닫기
+        function selectGender(button) {
+            const container = button.closest('.selection-options');
+            container.querySelectorAll('.option-btn').forEach(btn => btn.classList.remove('selected'));
+            button.classList.add('selected');
+            
+            // 데이터 업데이트
+            profileData.gender = button.dataset.value;
+            document.getElementById('gender-text').textContent = button.dataset.value;
+            
+            // 변경사항 감지
+            updateSaveButton();
+            
+            // 모달 자동 닫기
+            setTimeout(() => closeModal('gender-modal'), 300);
+        }
+
+        function selectStyle(button) {
+            const container = button.closest('.selection-options');
+            container.querySelectorAll('.option-btn').forEach(btn => btn.classList.remove('selected'));
+            button.classList.add('selected');
+            
+            // 데이터 업데이트
+            profileData.style = button.dataset.value;
+            let styleText = button.dataset.value;
+            if (styleText === '캐주얼') {
+                styleText = '캐주얼 (편안, 데일리)';
+            }
+            document.getElementById('style-text').textContent = styleText;
+            
+            // 변경사항 감지
+            updateSaveButton();
+            
+            // 모달 자동 닫기
+            setTimeout(() => closeModal('style-modal'), 300);
+        }
+
+        function selectFabric(button) {
+            const container = button.closest('.selection-options');
+            container.querySelectorAll('.option-btn').forEach(btn => btn.classList.remove('selected'));
+            button.classList.add('selected');
+            
+            // 데이터 업데이트
+            profileData.fabric = button.dataset.value;
+            document.getElementById('fabric-text').textContent = button.dataset.value;
+            
+            // 변경사항 감지
+            updateSaveButton();
+            
+            // 모달 자동 닫기
+            setTimeout(() => closeModal('fabric-modal'), 300);
+        }
+
+        // 통합 저장 함수
+        function saveProfile() {
+            // 이름 입력값 가져오기
+            profileData.name = document.getElementById('name-input').value || '이름을 입력하세요';
+            
+            // 저장 버튼 비활성화 (중복 클릭 방지)
+            const saveButton = document.querySelector('.save-button');
+            saveButton.disabled = true;
+            saveButton.textContent = '저장 중...';
+            
+            // 실제 API 호출 시뮬레이션
+            setTimeout(() => {
+                console.log('저장할 데이터:', profileData);
+                
+                // 실제 환경에서는 여기서 API 호출
+                // fetch('/api/profile', {
+                //     method: 'POST',
+                //     headers: {'Content-Type': 'application/json'},
+                //     body: JSON.stringify(profileData)
+                // })
+                // .then(response => response.json())
+                // .then(data => {
+                //     showToast('프로필이 저장되었습니다.');
+                //     saveButton.disabled = false;
+                //     saveButton.textContent = '저장하기';
+                // })
+                // .catch(error => {
+                //     showToast('저장 중 오류가 발생했습니다.');
+                //     saveButton.disabled = false;
+                //     saveButton.textContent = '저장하기';
+                // });
+                
+                // 토스트 메시지 표시
+                showToast('프로필이 저장되었습니다.');
+                
+                // 원본 데이터를 현재 데이터로 업데이트 (변경사항 초기화)
+                originalData = JSON.parse(JSON.stringify(profileData));
+                
+                // 버튼 상태 업데이트
+                updateSaveButton();
+                saveButton.textContent = '저장하기';
+            }, 1000);
+        }
+
+        // 토스트 메시지 표시 함수
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.classList.add('show');
+            
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 2000);
+        }
+
+        // Event Listeners
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeDatePicker();
+
+            // 이름 입력 필드 변경 감지
+            document.getElementById('name-input').addEventListener('input', function(e) {
+                profileData.name = e.target.value;
+                updateSaveButton(); // 변경사항 감지
+            });
+
+            // 초기 저장 버튼 상태 설정 (비활성화)
+            updateSaveButton();
+
+            // Close modal when clicking outside
+            document.querySelectorAll('.modal-overlay').forEach(overlay => {
+                overlay.addEventListener('click', function(e) {
+                    if (e.target === this) {
+                        this.classList.remove('show');
+                    }
+                });
+            });
+        });
+
+        // Back button functionality
+        document.querySelector('.back-btn').addEventListener('click', function() {
+            history.back();
+        });
+    </script>
+</body>
+</html>
