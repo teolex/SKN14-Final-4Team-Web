@@ -622,7 +622,7 @@
             width: clamp(260px, 80vw, 300px); /* 화면에 맞게 유연 */
             background: #fff;
             box-shadow: 2px 0 16px rgba(0,0,0,0.12);
-            z-index: 1000;
+            z-index: 2000;
             transform: translateX(-100%);  /* 기본: 화면 밖 */
             opacity: 0;                    /* 기본: 투명 */
             visibility: hidden;            /* 기본: 숨김 */
@@ -1627,6 +1627,32 @@
                 inputArea.classList.remove('scrimmed');
             }
         }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            // influencer 파라미터 읽기
+            const params = new URLSearchParams(window.location.search);
+            const influencerId = params.get('influencer');
+
+            if (influencerId) {
+                // 해당 인플루언서 아이템 찾기
+                const item = document.querySelector(`.influencer-item[data-chat-id="${influencerId}"]`);
+                if (item) {
+                    // 이름/이미지 추출
+                    const name = item.querySelector('.influencer-name').textContent;
+                    const avatarImg = item.querySelector('.influencer-avatar img');
+                    const headerName = document.querySelector('.profile-info h3');
+                    const headerImg = document.querySelector('.profile-image img');
+                    if (headerName) headerName.textContent = name;
+                    if (headerImg && avatarImg) {
+                        headerImg.src = avatarImg.src;
+                        headerImg.alt = name + ' 프로필';
+                    }
+                    // active 표시도 동기화
+                    document.querySelectorAll('.influencer-item').forEach(i => i.classList.remove('active'));
+                    item.classList.add('active');
+                }
+            }
+        });
 
     </script>
 </body>
