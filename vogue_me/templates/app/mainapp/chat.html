@@ -622,7 +622,7 @@
             width: clamp(260px, 80vw, 300px); /* 화면에 맞게 유연 */
             background: #fff;
             box-shadow: 2px 0 16px rgba(0,0,0,0.12);
-            z-index: 1000;
+            z-index: 2000;
             transform: translateX(-100%);  /* 기본: 화면 밖 */
             opacity: 0;                    /* 기본: 투명 */
             visibility: hidden;            /* 기본: 숨김 */
@@ -1036,6 +1036,7 @@
                 <div class="menu-divider"></div>
                 <div class="menu-item logout-item" onclick="logout()">
                     <div class="menu-icon-item">🚪</div>
+                  
                     <span>로그아웃</span>
                 </div>
             </div>
@@ -1318,21 +1319,6 @@
                 hideTypingIndicator();
                 addMessage(text, false)
             })
-
-            /*
-            setTimeout(() => {
-                hideTypingIndicator();
-                const response = simulateAIResponse(messageText);
-                addMessage(response.text, false, response.hasProducts);
-
-                // AI 메시지 생성 후 자동으로 음성 스트리밍 재생 (전역 설정이 켜져있을 때만)
-                if (globalVoiceEnabled) {
-                    setTimeout(() => {
-                        startVoiceStreaming();
-                    }, 500);
-                }
-            }, 1500 + Math.random() * 1000);
-            */
         }
 
         // 음성 스트리밍 시작 (백그라운드에서 자동 재생)
@@ -1503,13 +1489,13 @@
         function navigateToProfile() {
             closeSidebar();
             alert('프로필 페이지로 이동합니다.');
-            // window.location.href = '/profile';
+            window.location.href = '/profile';
         }
 
         function navigateToChatHistory() {
             closeSidebar();
             alert('대화 기록 페이지로 이동합니다.');
-            // window.location.href = '/chat-history';
+            window.location.href = '/chat_history';
         }
 
         function navigateToLikes() {
@@ -1577,7 +1563,6 @@
             document.querySelector('.profile-info h3').textContent = profileName;
             document.querySelector('.profile-image img').src = profileImage;
 
-
             // Close panel and reset UI
             const panel = document.getElementById('influencerPanel');
             const dropdownIcon = document.querySelector('.dropdown-icon');
@@ -1590,7 +1575,9 @@
             inputArea.classList.remove('scrimmed');
             
             // Show selection message
-            addMessage(`${profileName}님과의 대화를 시작합니다!`, false);
+            // addMessage(`${profileName}님과의 대화를 시작합니다!`, false);
+            // window.history.pushState(null, '', `/chat?influencer=${ai_id}`);
+            top.location.href = `/chat?influencer=${ai_id}`;
         }
 
         // Close influencer panel when clicking on scrim area
@@ -1607,6 +1594,32 @@
                 inputArea.classList.remove('scrimmed');
             }
         }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            // influencer 파라미터 읽기
+            const params = new URLSearchParams(window.location.search);
+            const influencerId = params.get('influencer');
+
+            if (influencerId) {
+                // 해당 인플루언서 아이템 찾기
+                const item = document.querySelector(`.influencer-item[data-chat-id="${influencerId}"]`);
+                if (item) {
+                    // 이름/이미지 추출
+                    const name = item.querySelector('.influencer-name').textContent;
+                    const avatarImg = item.querySelector('.influencer-avatar img');
+                    const headerName = document.querySelector('.profile-info h3');
+                    const headerImg = document.querySelector('.profile-image img');
+                    if (headerName) headerName.textContent = name;
+                    if (headerImg && avatarImg) {
+                        headerImg.src = avatarImg.src;
+                        headerImg.alt = name + ' 프로필';
+                    }
+                    // active 표시도 동기화
+                    document.querySelectorAll('.influencer-item').forEach(i => i.classList.remove('active'));
+                    item.classList.add('active');
+                }
+            }
+        });
 
     </script>
 </body>

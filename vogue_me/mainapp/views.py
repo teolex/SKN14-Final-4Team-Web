@@ -88,3 +88,6 @@ def profile(request):
 
 def chat_history(request):
     return render(request, "app/mainapp/chat_history.html")
+
+def likes(request):
+    return render(request, "app/mainapp/likes.html")
