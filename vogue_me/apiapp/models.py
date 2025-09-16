@@ -19,5 +19,9 @@ class ChatHistory(models.Model):
     def time(self):
         return self.talked_at.strftime("%H:%M %p")
 
+    @property
+    def is_user(self):
+        return self.talker_type == "user"
+
     class Meta:
         ordering = ['-talked_at']

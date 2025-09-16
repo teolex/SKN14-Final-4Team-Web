@@ -70,8 +70,18 @@ def survey(request):
         last_ai = __get_my_last_ai_info(request)
         return render(request, "app/mainapp/survey.html", last_ai)
 
+@login_required
 def chat(request):
-    return render(request, "app/mainapp/chat.html")
+    last_ai   = __get_my_last_ai_info(request)
+    chat_log  = ChatHistory.objects.filter(user_id=request.user.id, influencer_id=last_ai["id"]).all()[:20]
+    chat_log  = sorted(chat_log, key=lambda x:x.talked_at, reverse=False)
+
+    context = {
+        "last_ai"  : last_ai,
+        "all_ai"   : Influencer.objects.all(),
+        "chat_log" : chat_log,
+    }
+    return render(request, "app/mainapp/chat.html", context)
 
 def profile(request):
     return render(request, "app/mainapp/profile.html")
