@@ -2,6 +2,7 @@
 import json
 
 from django.contrib.auth.decorators import login_required
+from django.db.models import OuterRef, Subquery, F, Max
 from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render, redirect
 
@@ -89,7 +90,34 @@ def profile(request):
     return render(request, "app/mainapp/profile.html")
 
 def chat_history(request):
-    return render(request, "app/mainapp/chat_history.html")
+    user_id = request.user.id
+
+    latest_talk = (
+        ChatHistory.objects
+        .filter(user_id=user_id, influencer=OuterRef("influencer"))
+        .order_by("-talked_at")
+    )
+
+    qs = (
+        ChatHistory.objects
+        .filter(user_id=user_id)
+        .annotate(
+            latest_talked_at=Subquery(latest_talk.values("talked_at")[:1])
+        )
+        .filter(talked_at=F("latest_talked_at"))
+    )
+    chat_rooms = [
+        {
+            "ai_id"    : chat_log.influencer.id,
+            "ai_name"  : chat_log.influencer.name,
+            "ai_image" : chat_log.influencer.profile_img_url,
+            "chat_time": chat_log.log_time,
+            "chat_text": chat_log.text_only
+        }
+        for chat_log in qs
+    ]
+
+    return render(request, "app/mainapp/chat_history.html", {"chat_rooms" : chat_rooms})
 
 def likes(request):
     return render(request, "app/mainapp/likes.html")
