@@ -44,6 +44,7 @@
             scroll-behavior: smooth;
         }
 
+
         /* 모바일 (기본) */
         @media (max-width: 767px) {
             body {
@@ -768,13 +769,41 @@
             pointer-events: auto;
         }
 
-        /* 사이드바 열릴 때 배경 스크롤 잠금 (모바일 안정화) */
+        /* 사이드바 열릴 때 배경 스크롤 잠금 및 scrim 처리 */
         .phone-container.sidebar-open .chat-content,
         .phone-container.sidebar-open .input-area {
+            position: relative;
             pointer-events: none;          /* 배경 클릭 방지 */
         }
+
+        .phone-container.sidebar-open .chat-content::before,
+        .phone-container.sidebar-open .input-area::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.3);
+            z-index: 50;
+            pointer-events: auto;
+            cursor: pointer;
+        }
+
+        /* scrim 영역 클릭 시 사이드바 닫기 */
+        .phone-container.sidebar-open .chat-content::before,
+        .phone-container.sidebar-open .input-area::before {
+            transition: background-color 0.2s ease;
+        }
+
+        .phone-container.sidebar-open .chat-content::before:hover,
+        .phone-container.sidebar-open .input-area::before:hover {
+            background: rgba(0, 0, 0, 0.4);
+        }
+
         .phone-container.sidebar-open { 
             overflow: hidden;              /* phone-container 내부 스크롤 잠금 */
+            border-radius: 0;              /* 사이드바 열릴 때 radius 제거 */
         }
 
 
@@ -1469,6 +1498,20 @@
             const sidebar = document.getElementById('sidebarMenu');
             const overlay = document.getElementById('sidebarOverlay');
             const phone = document.querySelector('.phone-container');
+            const influencerPanel = document.getElementById('influencerPanel');
+
+            // influencer-panel이 열려있으면 접기
+            if (influencerPanel && influencerPanel.classList.contains('show')) {
+                influencerPanel.classList.remove('show');
+                // 관련 UI 요소들도 초기화
+                const dropdownIcon = document.querySelector('.dropdown-icon');
+                const chatContent = document.getElementById('chatContent');
+                const inputArea = document.getElementById('input-area');
+                
+                if (dropdownIcon) dropdownIcon.classList.remove('rotated');
+                if (chatContent) chatContent.classList.remove('scrimmed');
+                if (inputArea) inputArea.classList.remove('scrimmed');
+            }
 
             sidebar.classList.add('show');
             overlay.classList.add('show');
@@ -1618,6 +1661,34 @@
                     document.querySelectorAll('.influencer-item').forEach(i => i.classList.remove('active'));
                     item.classList.add('active');
                 }
+            }
+
+            // 사이드바 열릴 때 scrim 영역 클릭 시 사이드바 닫기
+            const chatContent = document.getElementById('chatContent');
+            const inputArea = document.querySelector('.input-area');
+            
+            if (chatContent) {
+                chatContent.addEventListener('click', function(e) {
+                    const phone = document.querySelector('.phone-container');
+                    if (phone && phone.classList.contains('sidebar-open')) {
+                        // scrim 영역 클릭 시에만 사이드바 닫기
+                        if (e.target === chatContent) {
+                            closeSidebar();
+                        }
+                    }
+                });
+            }
+            
+            if (inputArea) {
+                inputArea.addEventListener('click', function(e) {
+                    const phone = document.querySelector('.phone-container');
+                    if (phone && phone.classList.contains('sidebar-open')) {
+                        // scrim 영역 클릭 시에만 사이드바 닫기
+                        if (e.target === inputArea) {
+                            closeSidebar();
+                        }
+                    }
+                });
             }
         });
 
