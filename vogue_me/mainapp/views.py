@@ -13,8 +13,8 @@ from mainapp.models.influencer import Influencer
 from userapp.models import NewbieSurveyForm
 
 
-def __get_my_last_ai_info(request):
-    last_ai = Influencer.objects.get(id=request.user.member.last_ai_id)
+def __get_my_last_ai_info(ai_id):
+    last_ai = Influencer.objects.get(id=ai_id)
     return {
         "id"   : last_ai.id,
         "name" : last_ai.name,
@@ -72,8 +72,10 @@ def survey(request):
 
 @login_required
 def chat(request):
-    last_ai   = __get_my_last_ai_info(request)
-    chat_log  = ChatHistory.objects.filter(user_id=request.user.id, influencer_id=last_ai["id"]).all()[:20]
+    my_last_ai_id = request.user.member.last_ai_id
+    ai_id     = request.GET.get("influencer", my_last_ai_id)
+    last_ai   = __get_my_last_ai_info(ai_id)
+    chat_log  = ChatHistory.objects.filter(user_id=request.user.id, influencer_id=ai_id).all()[:20]
     chat_log  = sorted(chat_log, key=lambda x:x.talked_at, reverse=False)
 
     context = {
