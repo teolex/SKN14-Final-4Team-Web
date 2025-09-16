@@ -619,6 +619,9 @@
             }
         }
 
+        /* 처음 한 프레임 숨기되 레이아웃은 유지 */
+        .invisible { visibility: hidden; }
+
         .button-group {
             display: flex;
             justify-content: flex-end;
@@ -1189,6 +1192,39 @@
         let isPlaying = false;
         let currentModalType = null; // 'day' | 'month' | 'year' | null
         let modalOpen = false; // 모달 열림 상태 락
+        
+        // 기본값 상수
+        const DEFAULT_BIRTH = { day: 15, month: 6, year: 1990 };
+
+        // 각 wheel에 대한 프로그램적 스크롤 락
+        const wheelScrollLock = {
+            dayWheel: false,
+            monthWheel: false,
+            yearWheel: false,
+        };
+
+        // 프로그램적으로 중앙에 맞추는 헬퍼
+        function centerItem(wheel, item) {
+            if (!wheel || !item) return;
+            // 락 ON
+            wheelScrollLock[wheel.id] = true;
+
+            const target = item.offsetTop - (wheel.clientHeight - item.clientHeight) / 2;
+
+            // ★ 프로그램 스크롤에서는 부드러운 스크롤 끄기
+            const prev = wheel.style.scrollBehavior;
+            wheel.style.scrollBehavior = 'auto';
+            wheel.scrollTop = Math.max(0, target);
+            wheel.style.scrollBehavior = prev || '';
+
+            console.log(`Centering item: ${item.textContent} in ${wheel.id}, scrollTop: ${target}`);
+
+            // ★ 충분히 기다렸다가 락 해제
+            setTimeout(() => { 
+                wheelScrollLock[wheel.id] = false; 
+                console.log(`Lock released for ${wheel.id}`);
+            }, 250);
+        }
 
         // 음성 시각화 제어 함수
         function showAudioVisualization() {
@@ -1256,50 +1292,32 @@
 
         // Wheel 모달 관련 함수들
         function openWheelModal(type) {
-            // 타입 검증
-            if (!['day', 'month', 'year'].includes(type)) {
-                console.warn('Invalid wheel type:', type);
-                return;
-            }
-            
-            // 모달 락 확인 - 이미 모달이 열려있으면 무시
-            if (modalOpen) {
-                return;
-            }
-            
+            if (!['day','month','year'].includes(type) || modalOpen) return;
             modalOpen = true;
             currentModalType = type;
+
+            const modal = document.getElementById('wheelModal');
             const modalTitle = document.getElementById('modalTitle');
             const modalOptions = document.getElementById('modalOptions');
             const wheel = document.getElementById(type + 'Wheel');
-            
-            // 현재 선택된 값 가져오기
+
             const currentText = wheel.querySelector('.wheel-item.selected')?.textContent ?? '';
-            
-            // 모달 제목 설정 (현재 선택된 값 포함)
             modalTitle.textContent =
-                type === 'day'   ? `일 선택 (현재: ${currentText})` :
+                type === 'day' ? `일 선택 (현재: ${currentText})` :
                 type === 'month' ? `월 선택 (현재: ${currentText})` :
-                                   `년도 선택 (현재: ${currentText})`;
-            
-            // 옵션 생성
+                `년도 선택 (현재: ${currentText})`;
+
             modalOptions.innerHTML = '';
             wheel.querySelectorAll('.wheel-item').forEach(item => {
-                const option = document.createElement('div');
-                option.className = 'modal-option';
-                option.dataset.value = item.dataset.value;
-                option.textContent = item.textContent;
-                
-                // 현재 선택된 항목 표시
-                if (item.classList.contains('selected')) {
-                    option.classList.add('selected');
-                }
-                
-                // 클릭 이벤트
-                option.addEventListener('click', () => selectModalOption(option));
-                modalOptions.appendChild(option);
+                const opt = document.createElement('div');
+                opt.className = 'modal-option';
+                opt.dataset.value = item.dataset.value;
+                opt.textContent = item.textContent;
+                if (item.classList.contains('selected')) opt.classList.add('selected');
+                opt.addEventListener('click', () => selectModalOption(opt));
+                modalOptions.appendChild(opt);
             });
-            
+
             modal.classList.add('show');
         }
 
@@ -1475,25 +1493,40 @@
                         createConfetti();
                     }, 1000);
                 } else {
-                    document.getElementById(`survey${currentSurvey}`).classList.remove('hidden');
-                    updateNextButton(); // 새 페이지의 버튼 상태 업데이트
-                    
-                    // Survey3가 표시될 때 wheel picker 초기화
+                    // Survey3로 진입할 때 FOUC 방지 처리
                     if (currentSurvey === 3) {
-                        setTimeout(() => {
-                            initializeWheelPicker();
-                        }, 100);
+                        const s3 = document.getElementById('survey3');
+
+                        // 1) 먼저 block으로 만들되, 눈에는 안 보이게
+                        s3.classList.add('invisible');
+                        s3.classList.remove('hidden');
+
+                        // 2) 레이아웃이 잡힌 다음 기본값 중앙정렬 수행
+                        requestAnimationFrame(() => {
+                            initializeWheelPicker(); // 여기서 setWheelSelection + centerItem 실행
+
+                            // 3) 다음 프레임에 사용자에게 보여주기 (깜빡임 없음)
+                            requestAnimationFrame(() => {
+                                s3.classList.remove('invisible');
+                            });
+                        });
+
+                        updateNextButton();
+                    } else {
+                        document.getElementById(`survey${currentSurvey}`).classList.remove('hidden');
+                        updateNextButton(); // 새 페이지의 버튼 상태 업데이트
                     }
                 }
             }
         }
 
-        function getBirthday(age) {
-            age = parseInt(age);
-            const year     = (new Date()).getFullYear() - age;
-            const birthday = new Date(year + "-01-01");
-            return `${birthday.getFullYear()}-01-01`;
+        function getBirthday() {
+            const year  = document.querySelector("#yearWheel .wheel-item.selected").dataset.value;
+            const month = document.querySelector("#monthWheel .wheel-item.selected").dataset.value;
+            const day  = document.querySelector("#dayWheel .wheel-item.selected").dataset.value;
+            return `${year}-${month}-${day}`;
         }
+
         async function saveSurvey() {
             const param     = {};
             const $csrf     = document.getElementsByName("csrfmiddlewaretoken")[0];
@@ -1504,13 +1537,13 @@
                 let value   = e.dataset.value;
                 switch(data_id) {
                     case "gender"   : param["gender"]          = value;              break;
-                    case "age"      : param["birthday"]        = getBirthday(value); break;
                     case "style"    : param["prefer"]          = value;              break;
                     case "material" : param["prefer_material"] = value;              break;
                 }
             })
             const $nickname = document.getElementsByName("nickname")[0];
             param["nickname"] = $nickname.value;
+            param["birthday"] = getBirthday();
             const resp = await fetch("{% url "mainapp:survey" %}", {
                 method : "POST",
                 cache  : "no-cache",
@@ -1545,14 +1578,27 @@
                 updateProgressBar();
                 
                 // 이전 서베이 보이기
-                document.getElementById(`survey${currentSurvey}`).classList.remove('hidden');
-                updateNextButton(); // 이전 페이지의 버튼 상태 업데이트
-                
-                // Survey3가 표시될 때 wheel picker 초기화
                 if (currentSurvey === 3) {
-                    setTimeout(() => {
-                        initializeWheelPicker();
-                    }, 100);
+                    const s3 = document.getElementById('survey3');
+
+                    // 1) 먼저 block으로 만들되, 눈에는 안 보이게
+                    s3.classList.add('invisible');
+                    s3.classList.remove('hidden');
+
+                    // 2) 레이아웃이 잡힌 다음 기본값 중앙정렬 수행
+                    requestAnimationFrame(() => {
+                        initializeWheelPicker(); // 여기서 setWheelSelection + centerItem 실행
+
+                        // 3) 다음 프레임에 사용자에게 보여주기 (깜빡임 없음)
+                        requestAnimationFrame(() => {
+                            s3.classList.remove('invisible');
+                        });
+                    });
+
+                    updateNextButton(); // 이전 페이지의 버튼 상태 업데이트
+                } else {
+                    document.getElementById(`survey${currentSurvey}`).classList.remove('hidden');
+                    updateNextButton(); // 이전 페이지의 버튼 상태 업데이트
                 }
             }
         }
@@ -1576,51 +1622,46 @@
         }
 
         function initializeWheelPicker() {
-            // Wheel picker 초기화
             const dayWheel = document.getElementById('dayWheel');
             const monthWheel = document.getElementById('monthWheel');
             const yearWheel = document.getElementById('yearWheel');
-            
-            if (dayWheel && monthWheel && yearWheel) {
-                // 기본값 설정 (1990년 기준으로 설정)
-                const defaultDay = 1;
-                const defaultMonth = 1;
-                const defaultYear = 1990;
-                
-                // 초기 선택값 설정
-                setWheelSelection(dayWheel, defaultDay);
-                setWheelSelection(monthWheel, defaultMonth);
-                setWheelSelection(yearWheel, defaultYear);
-                
-                // 휠 클릭 → 모달 오픈
-                ['day', 'month', 'year'].forEach(type => {
-                    const wheel = document.getElementById(type + 'Wheel');
-                    if (wheel) {
-                        addWheelListeners(wheel);
-                    }
-                });
-                
-                // 초기 날짜 설정
-                selectBirthDate();
-                
-                console.log('Custom wheel picker initialized');
-            }
+            if (!(dayWheel && monthWheel && yearWheel)) return;
+
+            console.log('Initializing wheel picker with:', DEFAULT_BIRTH);
+
+            // 1) 초기 선택을 먼저 세팅(중앙정렬까지)
+            setWheelSelection(dayWheel, DEFAULT_BIRTH.day);
+            setWheelSelection(monthWheel, DEFAULT_BIRTH.month);
+            setWheelSelection(yearWheel, DEFAULT_BIRTH.year);
+
+            // 2) 그 다음 리스너 부착 (초기 스크롤에 의한 오버라이드 방지)
+            ['day', 'month', 'year'].forEach(type => {
+                const wheel = document.getElementById(type + 'Wheel');
+                if (wheel) addWheelListeners(wheel);
+            });
+
+            // 3) 히든 인풋 채우기 + 다음 버튼 활성화
+            selectBirthDate();
+            console.log('Wheel picker initialized with 15 / 6 / 1990');
         }
 
         function setWheelSelection(wheel, value) {
             if (!wheel) return;
             const target = String(value);
             let matched = null;
+
+            console.log(`Setting wheel selection: ${wheel.id} = ${target}`);
+
             wheel.querySelectorAll('.wheel-item').forEach(it => {
                 it.classList.remove('selected');
                 if (it.dataset.value === target) matched = it;
             });
+
             if (matched) {
                 matched.classList.add('selected');
-                // 중앙으로 스크롤
-                setTimeout(() => {
-                    matched.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                }, 60);
+                console.log(`Selected item: ${matched.textContent} in ${wheel.id}`);
+                // 렌더가 끝난 다음 프레임에 정확히 중앙 정렬
+                requestAnimationFrame(() => centerItem(wheel, matched));
             } else {
                 console.warn('No match in wheel for', target, 'in', wheel.id);
             }
@@ -1671,6 +1712,9 @@
             
             // 스크롤 이벤트로 선택 감지
             wheel.addEventListener('scroll', function() {
+                // 프로그램적 스크롤 중이면 무시
+                if (wheelScrollLock[wheel.id]) return;
+
                 const centerY = this.offsetHeight / 2;
                 const items = this.querySelectorAll('.wheel-item');
                 
@@ -1690,6 +1734,7 @@
                 });
                 
                 if (closestItem && !closestItem.classList.contains('selected')) {
+                    // 사용자 스크롤일 때만 반영
                     setWheelSelection(wheel, closestItem.dataset.value);
                     selectBirthDate();
                 }
@@ -1764,8 +1809,14 @@
             const selectedOptions = currentCard.querySelectorAll('.option-button.selected');
             const birthDate = currentCard.querySelector('#birthDate');
             
+            // survey1은 항상 버튼 활성화
+            if (currentCard.id === 'survey1') {
+                nextButton.disabled = false;
+                nextButton.style.opacity = '1';
+                nextButton.style.cursor = 'pointer';
+            }
             // survey3의 경우 date picker 확인
-            if (currentCard.id === 'survey3' && birthDate) {
+            else if (currentCard.id === 'survey3' && birthDate) {
                 if (birthDate.value) {
                     nextButton.disabled = false;
                     nextButton.style.opacity = '1';
@@ -1833,8 +1884,6 @@
                 }
             }
             
-            // Wheel picker 초기화
-            initializeWheelPicker();
             
             // 초기 progress bar 설정 (0단계부터 시작)
             updateProgressBar();
@@ -1898,6 +1947,18 @@
             const modalClose = document.querySelector('.modal-close');
             if (modalClose) {
                 modalClose.addEventListener('click', closeWheelModal);
+            }
+            
+            // 페이지가 곧바로 survey3 상태로 열릴 때도 FOUC 방지
+            const s3 = document.getElementById('survey3');
+            if (s3 && !s3.classList.contains('hidden')) {
+                s3.classList.add('invisible'); // 먼저 가리기
+                requestAnimationFrame(() => {
+                    initializeWheelPicker();     // 중앙 정렬
+                    requestAnimationFrame(() => {
+                        s3.classList.remove('invisible'); // 보이기
+                    });
+                });
             }
             
         });
