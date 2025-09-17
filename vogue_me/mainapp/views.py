@@ -2,6 +2,7 @@
 import json
 
 from django.contrib.auth.decorators import login_required
+from django.db.models import OuterRef, Subquery, F, Max
 from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render, redirect
 
@@ -13,8 +14,8 @@ from mainapp.models.influencer import Influencer
 from userapp.models import NewbieSurveyForm
 
 
-def __get_my_last_ai_info(request):
-    last_ai = Influencer.objects.get(id=request.user.member.last_ai_id)
+def __get_my_last_ai_info(ai_id):
+    last_ai = Influencer.objects.get(id=ai_id)
     return {
         "id"   : last_ai.id,
         "name" : last_ai.name,
@@ -67,29 +68,15 @@ def survey(request):
         print(form.errors)
         return JsonResponse(result)
     else:
-        last_ai = __get_my_last_ai_info(request)
+        last_ai = __get_my_last_ai_info(request.user.member.last_ai_id)
         return render(request, "app/mainapp/survey.html", last_ai)
 
 @login_required
 def chat(request):
-    # URL 파라미터로 인플루언서가 지정되면 그 값을 우선 사용
-    influencer_param = request.GET.get("influencer")
-    if influencer_param:
-        try:
-            ai_obj = Influencer.objects.get(id=int(influencer_param))
-            last_ai = {
-                "id": ai_obj.id,
-                "name": ai_obj.name,
-                "image": ai_obj.profile_img_url,
-                "voice": ai_obj.voice_info,
-            }
-        except (Influencer.DoesNotExist, ValueError):
-            # 잘못된 파라미터면 기존 로직으로 폴백
-            last_ai = __get_my_last_ai_info(request)
-    else:
-        last_ai = __get_my_last_ai_info(request)
-
-    chat_log  = ChatHistory.objects.filter(user_id=request.user.id, influencer_id=last_ai["id"]).all()[:20]
+    my_last_ai_id = request.user.member.last_ai_id
+    ai_id     = request.GET.get("influencer", my_last_ai_id)
+    last_ai   = __get_my_last_ai_info(ai_id)
+    chat_log  = ChatHistory.objects.filter(user_id=request.user.id, influencer_id=ai_id).all()[:20]
     chat_log  = sorted(chat_log, key=lambda x:x.talked_at, reverse=False)
 
     context = {
@@ -103,7 +90,34 @@ def profile(request):
     return render(request, "app/mainapp/profile.html")
 
 def chat_history(request):
-    return render(request, "app/mainapp/chat_history.html")
+    user_id = request.user.id
+
+    latest_talk = (
+        ChatHistory.objects
+        .filter(user_id=user_id, influencer=OuterRef("influencer"))
+        .order_by("-talked_at")
+    )
+
+    qs = (
+        ChatHistory.objects
+        .filter(user_id=user_id)
+        .annotate(
+            latest_talked_at=Subquery(latest_talk.values("talked_at")[:1])
+        )
+        .filter(talked_at=F("latest_talked_at"))
+    )
+    chat_rooms = [
+        {
+            "ai_id"    : chat_log.influencer.id,
+            "ai_name"  : chat_log.influencer.name,
+            "ai_image" : chat_log.influencer.profile_img_url,
+            "chat_time": chat_log.log_time,
+            "chat_text": chat_log.text_only
+        }
+        for chat_log in qs
+    ]
+
+    return render(request, "app/mainapp/chat_history.html", {"chat_rooms" : chat_rooms})
 
 def likes(request):
     return render(request, "app/mainapp/likes.html")

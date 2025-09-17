@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    {% include "layout/meta.html" %}
+    {% include "layout/global_variables.html" %}
     <title>대화 기록 - 채팅 히스토리</title>
     <style>
         * {
@@ -19,7 +19,6 @@
         }
 
         .container {
-            max-width: 375px;
             margin: 0 auto;
             background: #ffffff;
             min-height: 100vh;
@@ -342,59 +341,23 @@
         </div>
 
         <div class="chat-list">
-            <div class="chat-item" data-chat-id="1" onclick="goToChat('진경', 1)">
-                <div class="avatar-container">
-                    <div class="avatar">👤</div>
-                    <div class="online-dot"></div>
-                </div>
-                <div class="chat-info">
-                    <div class="chat-header">
-                        <div class="chat-name">진경</div>
-                        <div class="chat-time">18:31</div>
+            {% for room in chat_rooms %}
+                <div class="chat-item" data-chat-id="{{ room.ai_id }}" onclick="goToChat('{{ room.ai_name }}', {{ room.ai_id }})">
+                    <div class="avatar-container">
+                        <div class="avatar" style="background-image:url('{{ room.ai_image }}');background-size:contain;"></div>
+                        <div class="online-dot"></div>
                     </div>
-                    <div class="chat-preview">네 잘 알겠습니다. 혹시 다른게 있으시면...</div>
-                </div>
-            </div>
-
-            <div class="chat-item" data-chat-id="2" onclick="goToChat('우재', 2)">
-                <div class="avatar-container">
-                    <div class="avatar" style="background: #2C2C2E; color: white;">👤</div>
-                </div>
-                <div class="chat-info">
-                    <div class="chat-header">
-                        <div class="chat-name">우재</div>
-                        <div class="chat-time">어제</div>
+                    <div class="chat-info">
+                        <div class="chat-header">
+                            <div class="chat-name">{{ room.ai_name }}</div>
+                            <div class="chat-time">{{ room.chat_time }}</div>
+                        </div>
+                        <div class="chat-preview">{{ room.chat_text }}</div>
                     </div>
-                    <div class="chat-preview">네네 정산 알겠습니다 👍</div>
                 </div>
-            </div>
-
-            <div class="chat-item" data-chat-id="3" onclick="goToChat('혜진', 3)">
-                <div class="avatar-container">
-                    <div class="avatar" style="background: #2C2C2E; color: white;">👤</div>
-                </div>
-                <div class="chat-info">
-                    <div class="chat-header">
-                        <div class="chat-name">혜진</div>
-                        <div class="chat-time">어제</div>
-                    </div>
-                    <div class="chat-preview"></div>
-                </div>
-            </div>
-
-            <div class="chat-item" data-chat-id="4" onclick="goToChat('호영', 4)">
-                <div class="avatar-container">
-                    <div class="avatar" style="background: #2C2C2E; color: white;">👤</div>
-                </div>
-                <div class="chat-info">
-                    <div class="chat-header">
-                        <div class="chat-name">호영</div>
-                        <div class="chat-time">어제</div>
-                    </div>
-                    <div class="chat-preview"></div>
-                </div>
-            </div>
-        </div>
+            {% empty %}
+                <h1>일단 대화를 먼저 해야되!!!</h1>
+            {% endfor %}
 
         <!-- Delete Button -->
         <button class="delete-button" id="deleteButton" onclick="showDeleteModal()">삭제</button>
