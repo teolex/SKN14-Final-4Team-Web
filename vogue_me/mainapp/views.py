@@ -72,7 +72,23 @@ def survey(request):
 
 @login_required
 def chat(request):
-    last_ai   = __get_my_last_ai_info(request)
+    # URL 파라미터로 인플루언서가 지정되면 그 값을 우선 사용
+    influencer_param = request.GET.get("influencer")
+    if influencer_param:
+        try:
+            ai_obj = Influencer.objects.get(id=int(influencer_param))
+            last_ai = {
+                "id": ai_obj.id,
+                "name": ai_obj.name,
+                "image": ai_obj.profile_img_url,
+                "voice": ai_obj.voice_info,
+            }
+        except (Influencer.DoesNotExist, ValueError):
+            # 잘못된 파라미터면 기존 로직으로 폴백
+            last_ai = __get_my_last_ai_info(request)
+    else:
+        last_ai = __get_my_last_ai_info(request)
+
     chat_log  = ChatHistory.objects.filter(user_id=request.user.id, influencer_id=last_ai["id"]).all()[:20]
     chat_log  = sorted(chat_log, key=lambda x:x.talked_at, reverse=False)
 

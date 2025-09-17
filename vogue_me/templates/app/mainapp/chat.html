@@ -228,12 +228,6 @@
             font-weight: 600;
         }
 
-
-
-
-
-
-
         /* Messages */
         #messagesContainer {
             overflow-x: hidden;
@@ -280,7 +274,7 @@
         .message.ai .message-bubble {
             background: #f0f2f5;
             color: #333;
-            border-bottom-left-radius: 6px;
+            border-left: 4px solid #10c469;
         }
 
         .message-time {
@@ -886,7 +880,6 @@
             right: 0;
             bottom: 0;
             background: rgba(0, 0, 0, 0.3);
-            z-index: 50;
             pointer-events: auto;
             cursor: pointer;
         }
@@ -1036,7 +1029,6 @@
                 <div class="menu-divider"></div>
                 <div class="menu-item logout-item" onclick="logout()">
                     <div class="menu-icon-item">🚪</div>
-                  
                     <span>로그아웃</span>
                 </div>
             </div>
@@ -1081,7 +1073,7 @@
         <div class="influencer-panel" id="influencerPanel">
             <div class="influencer-list">
                 {% for ai in all_ai %}
-                    <div class="influencer-item{% if ai.id == last_ai.id %} active{% endif %}" onclick="selectInfluencer(this, {{ ai.id }})">
+                    <div class="influencer-item{% if ai.id == last_ai.id %} active{% endif %}" data-chat-id="{{ ai.id }}" onclick="selectInfluencer(this, {{ ai.id }})">
                         <div class="influencer-avatar">
                             <img src="{{ ai.profile_img_url }}" alt="{{ ai.name }}">
                             <div class="status-dot"></div>
@@ -1104,7 +1096,7 @@
                                 방금 알려주신 취향과 스타일 키워드를 바탕으로, 앞으로 <span class="highlight" id="userNickname">{{ user.first_name }}님🌿</span>만의 지구를 지키는 패션 추천을 준비해뒀어요.
                         </div>
                         <div class="welcome-text">
-                                 👉 지금 바로 "주말 데이트에 어울리는 캐주얼룩 추천해줘"처럼 말씀해주시면, 제가 취향에 맞춰 스타일을 보여드릴 수 있어요.
+                                👉 지금 바로 "주말 데이트에 어울리는 캐주얼룩 추천해줘"처럼 말씀해주시면, 제가 취향에 맞춰 스타일을 보여드릴 수 있어요.
                         </div>
                         <div class="welcome-text highlight">
                                 어떤 상황에 입을 옷이 궁금하세요? ✨
