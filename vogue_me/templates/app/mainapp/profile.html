@@ -293,6 +293,36 @@
         .hidden {
             display: none !important;
         }
+
+        /* 모바일 반응형 */
+        @media (max-width: 767px) {
+            body {
+                padding: 0;
+            }
+            
+            .mobile-container {
+                width: 100vw;
+                max-width: none;
+                height: 100vh;
+                max-height: none;
+                box-shadow: none;
+                margin: 0;
+            }
+        }
+
+        /* 태블릿 */
+        @media (min-width: 768px) and (max-width: 1023px) {
+            .mobile-container {
+                max-width: 400px;
+            }
+        }
+
+        /* 데스크톱 */
+        @media (min-width: 1024px) {
+            .mobile-container {
+                max-width: 420px;
+            }
+        }
     </style>
 </head>
 <body>
