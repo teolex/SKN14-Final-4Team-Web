@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    {% include "layout/meta.html" %}
+    {% include "layout/global_variables.html" %}
     <title>{{ last_ai.name }} AI 어시스턴트</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -1323,7 +1323,6 @@
         }
 
         // 메시지 전송 함수
-        const $csrf  = document.getElementsByName("csrfmiddlewaretoken")[0];
         function sendMessage() {
             const messageInput = document.getElementById('messageInput');
             const messageText = messageInput.value.trim();
@@ -1337,11 +1336,10 @@
             // AI 응답 시뮬레이션
             showTypingIndicator();
 
-            {#fetch("http://looplabel-api.ap-northeast-2.elasticbeanstalk.com/api/ask", {#}
             fetch("/api/ask", {
                 method : "POST",
                 cache  : "no-cache",
-                headers: { "Content-Type": "application/json", "X-CSRFToken": $csrf.value },
+                headers: { "Content-Type": "application/json", "X-CSRFToken": getCookie("csrftoken") },
                 body: JSON.stringify({ query : messageText, user_id : {% if user.is_authenticated %}{{ user.id }}{% else %}1{% endif %} })
             }).then(resp => { return resp.text();
             }).then(text => {
