@@ -164,6 +164,9 @@
             font-weight: 600;
             color: #666;
             font-size: 14px;
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-position: center;
         }
 
         .online-dot {
@@ -373,7 +376,7 @@
             {% for room in chat_rooms %}
                 <div class="chat-item" data-chat-id="{{ room.ai_id }}" onclick="goToChat('{{ room.ai_name }}', {{ room.ai_id }})">
                     <div class="avatar-container">
-                        <div class="avatar" style="background-image:url('{{ room.ai_image }}');background-size:contain;"></div>
+                        <div class="avatar" style="background-image:url('{{ room.ai_image }}');"></div>
                         <div class="online-dot"></div>
                     </div>
                     <div class="chat-info">

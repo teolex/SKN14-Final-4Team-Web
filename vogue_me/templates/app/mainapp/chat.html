@@ -1234,6 +1234,7 @@
             messageDiv.innerHTML = messageContent;
             
             messagesContainer.appendChild(messageDiv);
+            messageDiv.scrollIntoView({behavior:"smooth", block:"end"});
             
             // 새로 생성된 product-container에 스크롤 이벤트 적용
             const newProductContainer = messageDiv.querySelector('.product-container');
@@ -1528,7 +1529,6 @@
 
         function navigateToChatHistory() {
             closeSidebar();
-            alert('대화 기록 페이지로 이동합니다.');
             window.location.href = '/chat_history';
         }
 
@@ -1682,7 +1682,7 @@
                 });
             }
         });
-
+        scrollToBottom();
     </script>
 </body>
 </html>
