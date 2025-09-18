@@ -74,6 +74,15 @@ def like_api(request, search_id):
     return JsonResponse(result)
 
 @login_required
+def like_check(request):
+    user_id = request.user.id
+    style_ids = request.GET.getlist("style_id")
+    style_ids = list(set(style_ids))
+    like_ids = Like.objects.filter(search_id__in=style_ids, user_id=user_id).values_list("search_id", flat=True)
+
+    return JsonResponse({"like" : list(like_ids)})
+
+@login_required
 def set_last_ai(request, ai_id):
     member = request.user.member
     member.last_ai_id = ai_id
