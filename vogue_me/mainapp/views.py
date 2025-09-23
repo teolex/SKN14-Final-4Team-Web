@@ -2,15 +2,15 @@
 import json
 
 from django.contrib.auth.decorators import login_required
-from django.db.models import OuterRef, Subquery, F, Max
+from django.db.models import OuterRef, Subquery, F
 from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render, redirect
 
 from apiapp.models import ChatHistory
+from mainapp.models.influencer import Influencer
 from mainapp.models.like import Like
 from mainapp.models.search_history import SearchHistory
 from mainapp.models.search_history_product import SearchHistoryProduct
-from mainapp.models.influencer import Influencer
 from userapp.models import NewbieSurveyForm
 
 
@@ -68,7 +68,6 @@ def survey(request):
             request.user.save()
             form.save()
             result["status"] = True
-        print(form.errors)
         return JsonResponse(result)
     else:
         last_ai = __get_my_last_ai_info(request.user.member.last_ai_id)
@@ -76,8 +75,10 @@ def survey(request):
 
 @login_required
 def chat(request):
-    my_last_ai_id = request.user.member.last_ai_id
-    ai_id     = request.GET.get("influencer", my_last_ai_id)
+    ai_id     = request.user.member.last_ai_id
+    ai_id     = request.GET.get("influencer", ai_id)
+    request.session["last_ai_id"] = ai_id
+
     last_ai   = __get_my_last_ai_info(ai_id)
     chat_log  = ChatHistory.objects.filter(user_id=request.user.id, influencer_id=ai_id).all()[:20]
     chat_log  = sorted(chat_log, key=lambda x:x.talked_at, reverse=False)
@@ -123,4 +124,6 @@ def chat_history(request):
     return render(request, "app/mainapp/chat_history.html", {"chat_rooms" : chat_rooms})
 
 def likes(request):
-    return render(request, "app/mainapp/likes.html")
+    likes  = Like.objects.prefetch_related("search").filter(user=request.user)
+    styles = [like.search for like in likes]
+    return render(request, "app/mainapp/likes.html", {"liked_styles" : styles})
