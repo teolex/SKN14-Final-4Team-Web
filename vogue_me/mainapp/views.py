@@ -26,7 +26,7 @@ def __get_my_last_ai_info(ai_id):
 @login_required
 def index(request):
     if not ChatHistory.objects.filter(user_id=request.user.id).exists():
-        return redirect("mainapp:survey")
+        return redirect("mainapp:chat")
 
     # 마지막에 대화했던 AI 정보 호출해서 화면에 구성.
     return redirect("mainapp:chat")
@@ -83,12 +83,23 @@ def chat(request):
     chat_log  = ChatHistory.objects.filter(user_id=request.user.id, influencer_id=ai_id).all()[:20]
     chat_log  = sorted(chat_log, key=lambda x:x.talked_at, reverse=False)
 
+    voice_enabled = request.user.member.voice_enabled
+
     context = {
         "last_ai"  : last_ai,
         "all_ai"   : Influencer.objects.all(),
         "chat_log" : chat_log,
+        "voice_enabled" : voice_enabled,
     }
     return render(request, "app/mainapp/chat.html", context)
+
+def toggle_voice(request):
+    data = json.loads(request.body)
+    enabled = data.get('voice_enabled', True)
+    profile = request.user.member
+    profile.voice_enabled = enabled
+    profile.save()
+    return JsonResponse({'success': True, 'voice_enabled': profile.voice_enabled})
 
 def profile(request):
     return render(request, "app/mainapp/profile.html")
@@ -157,3 +168,5 @@ def likes(request):
     likes  = Like.objects.prefetch_related("search").filter(user=request.user)
     styles = [like.search for like in likes]
     return render(request, "app/mainapp/likes.html", {"liked_styles" : styles})
+
+

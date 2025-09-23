@@ -1425,12 +1425,22 @@
             
             if (globalVoiceEnabled) {
                 voiceBtn.classList.add('active');
-                voiceBtn.title = '음성 자동재생 켜짐';
+                voiceBtn.title = '음성 자동재생';
             } else {
                 voiceBtn.classList.remove('active');
-                voiceBtn.title = '음성 자동재생 꺼짐';
+                voiceBtn.title = '음소거';
                 stopVoiceStreaming();
             }
+
+            fetch('/toggle-voice/', {
+                method : 'POST',
+                headers: {
+                    'X-CSRFToken' : getCookie('csrftoken'),
+                    'Content-Type': 'application/json',
+                },
+                body   : JSON.stringify({ voice_enabled: glabalVoiceEnabled }),
+                credentials : 'include'
+            })
         }
 
         // 페이지 로드 시 전역 음성 버튼 활성화
