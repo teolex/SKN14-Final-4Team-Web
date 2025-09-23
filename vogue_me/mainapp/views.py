@@ -63,6 +63,9 @@ def survey(request):
         data   = json.loads(request.body)
         form   = NewbieSurveyForm(data, instance=request.user.member)
         if form.is_valid():
+            nickname = data.get('nickname') or form.cleaned_data.get('nickname')
+            request.user.first_name = nickname
+            request.user.save()
             form.save()
             result["status"] = True
         print(form.errors)
