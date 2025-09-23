@@ -12,6 +12,7 @@ urlpatterns = [
     path('survey', v.survey, name="survey"),
     path('chat' , v.chat , name="chat"),
     path('profile', v.profile, name="profile"),
+    path("user/profile/save", v.save_profile, name="save_profile"),
     path('chat_history', v.chat_history, name="chat_history"),
     path('likes', v.likes, name="likes"),
 ]
