@@ -14,5 +14,6 @@ urlpatterns = [
     path('profile', v.profile, name="profile"),
     path("user/profile/save", v.save_profile, name="save_profile"),
     path('chat_history', v.chat_history, name="chat_history"),
+    path("chat/delete/", v.delete_chats, name="delete_chats"),
     path('likes', v.likes, name="likes"),
 ]
