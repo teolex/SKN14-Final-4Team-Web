@@ -141,6 +141,18 @@ def chat_history(request):
 
     return render(request, "app/mainapp/chat_history.html", {"chat_rooms" : chat_rooms})
 
+@login_required
+def delete_chats(request):
+    data = json.loads(request.body.decode('utf-8'))
+    chat_ids = data.get("chat_ids", [])
+
+    if not chat_ids:
+        return JsonResponse({"success": False, "message": "삭제할 항목이 없습니다."})
+        
+    ChatHistory.objects.filter(influencer_id__in=chat_ids, user=request.user).delete()
+
+    return JsonResponse({"success": True})
+
 def likes(request):
     likes  = Like.objects.prefetch_related("search").filter(user=request.user)
     styles = [like.search for like in likes]
