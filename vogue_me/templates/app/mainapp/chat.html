@@ -1209,6 +1209,18 @@
     </div>
 
     <script>
+        function autoPlayLastAudio() {
+            if (!globalVoiceEnabled) return;
+            const audios = document.querySelectorAll(".message.ai audio");
+            if (audios.length > 0) {
+                const lastAudio = audios[audios.length - 1];
+                lastAudio.loop = false; // 반복 끄기
+                lastAudio.play().catch(err => {
+                    console.log("자동재생 실패 (브라우저 정책 등):", err);
+                });
+            }
+        }
+
         // 현재 시간 포맷팅
         function getCurrentTime() {
             const now = new Date();
@@ -1275,6 +1287,16 @@
                 setupProductContainerScroll(newProductContainer);
             }
             
+            if (!isUser) {
+                const audioEl = messageDiv.querySelector("audio");
+                if (audioEl && globalVoiceEnabled) {
+                    audioEl.loop = false; // 반복 끄기
+                    audioEl.play().catch(err => {
+                        console.log("자동재생 실패:", err);
+                    });
+                }
+            }
+
             scrollToBottom();
         }
 
