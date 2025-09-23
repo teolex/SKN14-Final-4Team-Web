@@ -93,6 +93,24 @@ def chat(request):
 def profile(request):
     return render(request, "app/mainapp/profile.html")
 
+def save_profile(request):
+    if request.method == "POST":
+        try:
+            data   = json.loads(request.body.decode("utf-8"))
+            user   = request.user
+            member = user.member
+
+            member.nickname        = data.get("nickname", member.nickname)
+            member.prefer          = data.get("prefer", member.prefer)
+            member.prefer_material = data.get("prefer_material", member.prefer_material)
+            member.save()
+
+            return JsonResponse({"success": True, "message": "프로필 저장 완료"})
+        except Exception as e:
+            return JsonResponse({"success": False, "message": str(e)}, status=400)
+
+    return JsonResponse({"success": False, "message": "잘못된 요청"}, status=405)
+
 def chat_history(request):
     user_id = request.user.id
 
