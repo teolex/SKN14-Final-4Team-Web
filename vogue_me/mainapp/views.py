@@ -1,12 +1,11 @@
 # Create your views here.
 import json
 
+from apiapp.models import ChatHistory
 from django.contrib.auth.decorators import login_required
 from django.db.models import OuterRef, Subquery, F
 from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render, redirect
-
-from apiapp.models import ChatHistory
 from mainapp.models.influencer import Influencer
 from mainapp.models.like import Like
 from mainapp.models.search_history import SearchHistory
@@ -22,6 +21,10 @@ def __get_my_last_ai_info(ai_id):
         "image": last_ai.profile_img_url,
         "voice": last_ai.voice_info,
     }
+
+def robots_txt(request):
+    content = "User-agent: *\nDisallow: /\n"
+    return HttpResponse(content, content_type="text/plain")
 
 @login_required
 def index(request):
