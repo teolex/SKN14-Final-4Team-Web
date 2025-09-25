@@ -71,10 +71,16 @@ def survey(request):
             nickname = data.get('nickname') or form.cleaned_data.get('nickname')
             request.user.first_name = nickname
             request.user.save()
-            form.save()
+
+            member = form.save(commit=False)
+            member.survey_completed = True
+            member.save()
             result["status"] = True
         return JsonResponse(result)
     else:
+        if request.user.member.survey_completed:
+            return redirect("mainapp:profile")
+
         last_ai = __get_my_last_ai_info(request.user.member.last_ai_id)
         return render(request, "app/mainapp/survey.html", last_ai)
 
