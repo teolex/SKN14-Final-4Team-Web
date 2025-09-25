@@ -28,6 +28,7 @@ INSTALLED_APPS  = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    "csp",
 
     "mainapp",
     "userapp",
@@ -42,6 +43,7 @@ MIDDLEWARE      = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'csp.middleware.CSPMiddleware',
 ]
 TEMPLATES       = [
     {
@@ -94,6 +96,37 @@ CSRF_TRUSTED_ORIGINS = [
     "http://*.looplabel.site",
     "https://*.looplabel.site",
 ]
+
+# CSP 정책 설정
+CSP_POLICY = {
+    'default-src': ["'self'"],
+
+    'frame-src': [
+        "'self'",
+        'https://www.youtube.com',
+        'https://www.youtube-nocookie.com',
+    ],
+
+    'script-src': [
+        "'self'",
+        "'unsafe-inline'",
+        'https://www.youtube.com',
+        'https://s.ytimg.com',
+        'https://www.youtube-nocookie.com',
+    ],
+
+    'img-src': [
+        "'self'",
+        'https://i.ytimg.com',
+        'https://www.youtube.com',
+    ],
+
+    'media-src': [
+        'https://www.youtube.com',
+        'https://www.youtube-nocookie.com',
+    ],
+}
+
 
 # 정적 파일 ###########################################
 STATIC_URL = 'static/'
