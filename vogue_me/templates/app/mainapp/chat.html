@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+{% load static %}
 <html lang="ko">
 <head>
     {% include "layout/meta.html" %}
@@ -1055,6 +1056,20 @@
             font-size: 15px;
             margin-right: 10px;
         }
+
+        #shorts {
+            display: block;
+            overflow-x: auto;
+            white-space: nowrap;
+            width: 40%;
+        }
+        #shorts > div {
+          display:inline-block;
+          margin-right:5px;
+        }
+        #shorts iframe {
+          border:0;
+        }
     </style>
 </head>
 <body>
@@ -1236,6 +1251,7 @@
                     <div class="typing-dot"></div>
                     <div class="typing-dot"></div>
                     <div class="typing-dot"></div>
+                    <div id="shorts"></div>
                 </div>
             </div>
         </div>
@@ -1260,6 +1276,18 @@
         </div>
     </div>
 
+    <script src="{% static "js/chat.js" %}"></script>
+    <script>
+        const $shorts   = document.getElementById("shorts");
+        const channels  = {
+            "1" : "UCkxbPwdaV74Erdxt97Nt23w",
+            "2" : "UCw-kXdzxMdMdLNI0ZlFFbmA",
+            "3" : "UCkvh3vrWsoi_cd7HyiikzIQ",
+            "4" : "UC_w6vBBczYwQ-4hCwgqWW9w",
+        };
+        const channelId = channels["{{ last_ai.id }}"];
+        const youtube   = new Youtube("AIzaSyBs5WVEtocaAYuziY8TnDlnhwAUYbgqTdM", $shorts);
+    </script>
     <script>
         function autoPlayLastAudio() {
             if (!globalVoiceEnabled) return;
@@ -1382,6 +1410,7 @@
             }
         }
 
+        /*
         const $mentWindow = document.getElementById("waiting-ment")
         let waiting_interval;
         function waitingMent() {
@@ -1422,20 +1451,23 @@
                     $mentWindow.textContent = ments[idx];
                     round++;
                 }
-            }, 3000);
+            }, 5000);
         }
+        */
 
         // 타이핑 인디케이터 표시/숨김
         function showTypingIndicator() {
             document.getElementById('typingIndicator').classList.add('show');
             scrollToBottom();
 
-            waitingMent();
+            {#waitingMent();#}
+            youtube(channelId)
         }
 
         function hideTypingIndicator() {
             document.getElementById('typingIndicator').classList.remove('show');
-            clearInterval(waiting_interval);
+            {#clearInterval(waiting_interval);#}
+            {#$mentWindow.textContent = "";#}
         }
 
         // 스크롤을 최하단으로
