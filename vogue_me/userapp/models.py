@@ -27,6 +27,7 @@ class Member(models.Model):
     prefer    = models.CharField(max_length=100, null=True)
     photo_url = models.CharField(max_length=256, null=False, default="/static/default_user.jpg")
     voice_enabled = models.BooleanField(default=True)
+    survey_completed = models.BooleanField(default=False)
 
     last_ai   = models.ForeignKey(Influencer, on_delete=models.SET_NULL, null=True, default=1)
 
