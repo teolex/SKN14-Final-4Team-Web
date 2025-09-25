@@ -1,4 +1,5 @@
 from datetime import date
+import random
 
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
@@ -35,6 +36,13 @@ class Member(models.Model):
 
     @classmethod
     def add_new_member(cls, user, sns_type, height=0, birthday=timezone.now(), photo_url="/static/default_user.jpg"):
+        if sns_type == "email":
+            profile_images = [
+                "/static/images/profiles/profile_1.png",
+                "/static/images/profiles/profile_2.png",
+                "/static/images/profiles/profile_3.png",
+            ]
+            photo_url = random.choice(profile_images)
         return Member.objects.create(user=user, sns_type=sns_type, photo_url=photo_url, height=height, birthday=birthday)
 
     def is_authed(self):
