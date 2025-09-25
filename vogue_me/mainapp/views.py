@@ -44,14 +44,16 @@ def detail(request, id):
         "like" : like
     }
     try:
-        impacts = [json.loads(item.product.impact) for item in items]
         water_saved = 0
         co2_saved   = 0
-        for impact in impacts:
-            water_saved += impact["water_saved_l"]
-            co2_saved   += impact["co2_saved_kg"]
-        context["water_saved"] = water_saved
-        context["co2_saved"]   = co2_saved
+        for item in items:
+            water = json.loads(item.product.water_saved_l)
+            co2   = json.loads(item.product.co2_saved_kg)
+
+            water_saved += water.get("water_saved_l", 0)
+            co2_saved += co2.get("co2_saved_kg", 0)
+        context["water_saved_l"] = round(water_saved, 2)
+        context["co2_saved_kg"]  = round(co2_saved, 2)
     except:
         pass
 
@@ -90,6 +92,7 @@ def chat(request):
         "all_ai"   : Influencer.objects.all(),
         "chat_log" : chat_log,
         "voice_enabled" : voice_enabled,
+        "ai_id"    : ai_id,
     }
     return render(request, "app/mainapp/chat.html", context)
 
