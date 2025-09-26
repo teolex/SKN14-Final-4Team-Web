@@ -2,10 +2,9 @@ import json
 import os
 
 import requests
+from apiapp.models import ChatHistory
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse, HttpResponse
-
-from apiapp.models import ChatHistory
 from mainapp.models.like import Like
 
 
@@ -44,7 +43,7 @@ def _get_result(msg:str, user_id, ai_id):
     params  = {"query": msg, "user_id": user_id, "ai_id": ai_id}
     headers = {"Content-Type": "application/json"}
     # response = requests.post(url, data=params, headers=headers)
-    response = requests.post(url, json=params, headers=headers)
+    response = requests.post(url, json=params, headers=headers, timeout=300)
     response.raise_for_status()
 
     result_type = response.headers.get('Content-Type', '')
