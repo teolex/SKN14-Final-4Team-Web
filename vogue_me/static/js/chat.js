@@ -89,7 +89,7 @@ const Youtube = function(apiKey, $box) {
             shorts.forEach(short => {
                 const div = document.createElement("div");
                 div.innerHTML = `
-                    <iframe width="170" height="315"
+                    <iframe width="170" height="300"
                         src="${short.embed}"
                         title="${short.title}"
                         allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
