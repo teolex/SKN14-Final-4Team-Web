@@ -1058,7 +1058,7 @@
         }
 
         #shorts {
-            display: block;
+            display: none;
             overflow-x: auto;
             white-space: nowrap;
             width: 40%;
@@ -1070,6 +1070,34 @@
         #shorts iframe {
           border:0;
         }
+        .shorts-container {
+            display: flex;
+            gap: 12px;
+            margin: 12px 0 20px 0;
+            overflow-x: auto;
+            overflow-y: hidden;
+            padding-bottom: 8px;
+            scrollbar-width: thin;
+            scrollbar-color: #ddd transparent;
+            scroll-behavior: smooth;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .shorts-container > div {
+            flex: 0 0 auto;
+            width: 180px; /* 카드 폭 */
+            border-radius: 12px;
+            overflow: hidden;
+            background: #000;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .shorts-container iframe {
+            width: 100%;
+            height: 320px; /* Shorts 세로 비율 */
+            border: 0;
+        }
+
     </style>
 </head>
 <body>
@@ -1251,10 +1279,14 @@
                     <div class="typing-dot"></div>
                     <div class="typing-dot"></div>
                     <div class="typing-dot"></div>
-                    <div id="shorts"></div>
+                    <!--기존 숏츠 있던 자리-->
                 </div>
+                <!--변경된 숏츠 자리-->
             </div>
+            <div id="shorts" class="shorts-container"></div>
+
         </div>
+
 
         <!-- Input Area -->
         <div class="input-area" onclick="closeInfluencerPanel()">
@@ -1287,6 +1319,7 @@
         };
         const channelId = channels["{{ last_ai.id }}"];
         const youtube   = new Youtube("AIzaSyBs5WVEtocaAYuziY8TnDlnhwAUYbgqTdM", $shorts);
+        window.showShorts = youtube;
     </script>
     <script>
         function autoPlayLastAudio() {
@@ -1466,8 +1499,10 @@
 
         function hideTypingIndicator() {
             document.getElementById('typingIndicator').classList.remove('show');
+            document.getElementById('shorts').style.display = 'none';
             {#clearInterval(waiting_interval);#}
             {#$mentWindow.textContent = "";#}
+            document.getElementById("shorts").innerHTML = "";
         }
 
         // 스크롤을 최하단으로
@@ -1698,6 +1733,7 @@
             phone.classList.add('sidebar-open');   // 배경 스크롤 잠금
         }
 
+
         function closeSidebar() {
             const sidebar = document.getElementById('sidebarMenu');
             const overlay = document.getElementById('sidebarOverlay');
@@ -1888,6 +1924,8 @@
             initHeartIcon();
         });
         scrollToBottom();
+
+
     </script>
 </body>
 </html>

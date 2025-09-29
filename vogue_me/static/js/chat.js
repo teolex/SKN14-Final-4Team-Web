@@ -1,6 +1,10 @@
+const apiKey = "AIzaSyBs5WVEtocaAYuziY8TnDlnhwAUYbgqTdM"
+const shortsBox = document.getElementById("shorts");
+
+
 const Youtube = function(apiKey, $box) {
-    const MAX_LOADS   = 30; // 조회할 결과 수
-    const MAX_RESULTS = 10;  // 원하는 결과 수
+    const MAX_LOADS   = 50;
+    const MAX_RESULTS = 10;
 
     async function getUploadPlaylistId(channelId) {
         const url = `https://www.googleapis.com/youtube/v3/channels?part=contentDetails&id=${channelId}&key=${apiKey}`;
@@ -13,73 +17,107 @@ const Youtube = function(apiKey, $box) {
         const url = `https://www.googleapis.com/youtube/v3/playlistItems?part=contentDetails&maxResults=${MAX_LOADS}&playlistId=${playlistId}&key=${apiKey}`;
         const res = await fetch(url);
         const data = await res.json();
-        const searched = data.items.map(item => item.contentDetails.videoId);
-        const set = new Set();
-        while(set.size < MAX_RESULTS) {
-            let idx = parseInt(Math.random() * searched.length);
-            set.add(idx);
-        }
-        const result = [];
-        set.forEach(v => result.push(searched[v]))
-        // for(let v in set) {
-        //     result.push(searched[v])
-        // }
-        return result;
+        return data.items.map(item => item.contentDetails.videoId); // 랜덤 X
+
     }
 
-    async function getVideoDetails(videoIds) {
+    async function getShorts(videoIds) {
         const ids = videoIds.join(',');
         const url = `https://www.googleapis.com/youtube/v3/videos?part=contentDetails,snippet&id=${ids}&key=${apiKey}`;
         const res = await fetch(url);
         const data = await res.json();
-        return data.items.map(item => {
-            const duration = item.contentDetails.duration;
-            const seconds = parseISODuration(duration);
-            return {
-            title: item.snippet.title,
-            thumb: item.snippet.thumbnails.standard.url,
-            videoId: item.id,
-            duration: seconds,
-            url: `https://www.youtube.com/shorts/${item.id}`,
-            embed: `https://www.youtube.com/embed/${item.id}`,
-            isShort: seconds <= 60
-            };
-        }).filter(video => video.isShort).slice(0, 5);
+
+        // 숏츠 먼저 필터링
+        const shortsAll = data.items.filter(item => {
+            const seconds = parseISODuration(item.contentDetails.duration);
+            return seconds <= 60; // 숏츠 정의는 60초 이하
+        });
+
+        // 그 다음에 랜덤 섞기
+        const shorts = shortsAll
+            .sort(() => 0.5 - Math.random())
+            .slice(0, 5)
+            .map(item => ({
+                title: item.snippet.title,
+                embed: `https://www.youtube.com/embed/${item.id}`
+            }));
+
+        return shorts;
     }
 
-    // ISO 8601 Duration (e.g., PT45S, PT1M2S, etc.) → seconds
+
     function parseISODuration(iso) {
         const regex = /PT(?:(\d+)M)?(?:(\d+)S)?/;
         const matches = iso.match(regex);
-        const minutes = parseInt(matches[1] || '0', 10);
-        const seconds = parseInt(matches[2] || '0', 10);
-        return minutes * 60 + seconds;
+        return (parseInt(matches[1] || '0') * 60) + parseInt(matches[2] || '0');
     }
+
+    // async function fetchShortsFromChannel(channelId) {
+    //     try {
+    //         const playlistId = await getUploadPlaylistId(channelId);
+    //         const videoIds   = await getVideosFromPlaylist(playlistId);
+    //         // const shorts     = await getVideoDetails(videoIds);
+    //         const shorts_test = allVideos.filter(v => parseISODuration(v.contentDetails.duration) <= 60);
+    //         const shorts = shorts_test.sort(() => 0.5 - Math.random()).slice(0, 5);
+
+
+    //         $box.innerHTML = "";
+    //         shorts.forEach(short => {
+    //             const div = document.createElement("div");
+    //             div.innerHTML = `
+    //                 <iframe width="170" height="315" 
+    //                     src="${short.embed}" 
+    //                     title="${short.title}" 
+    //                     allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+    //                     allowfullscreen>
+    //                 </iframe>`;
+    //             $box.appendChild(div);
+    //         });
+    //         $box.style.display = "flex";
+    //     } catch (err) {
+    //         console.error("Error fetching Shorts:", err);
+    //     }
+    // }
 
     async function fetchShortsFromChannel(channelId) {
         try {
             const playlistId = await getUploadPlaylistId(channelId);
             const videoIds = await getVideosFromPlaylist(playlistId);
-            const shorts = await getVideoDetails(videoIds);
-            // console.log('Found Shorts:', shorts);
+            const shorts = await getShorts(videoIds);
 
             $box.innerHTML = "";
             shorts.forEach(short => {
-                const div = document.createElement('div');
+                const div = document.createElement("div");
                 div.innerHTML = `
-                    <iframe width="170" height="315" 
-                        src="${short.embed}" 
-                        title="${short.title}" 
-                        allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+                    <iframe width="170" height="315"
+                        src="${short.embed}"
+                        title="${short.title}"
+                        allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                         allowfullscreen>
-                    </iframe>
-                `;
+                    </iframe>`;
                 $box.appendChild(div);
             });
+            $box.style.display = "flex";
         } catch (err) {
-            console.error('Error fetching Shorts:', err);
+            console.error("Error fetching Shorts:", err);
         }
     }
 
     return fetchShortsFromChannel;
+};
+
+// 초기화
+const fetchShorts = Youtube(apiKey, shortsBox);
+
+// 로딩 표시
+function showLoading(ai_id) {
+    document.querySelector(".typing-indicator").style.display = "flex";
+    const channelId = AIShortsChannels[ai_id]; // html or js에서 매핑 필요
+    if (channelId) {
+        fetchShorts(channelId);
+    }
+}
+function hideLoading() {
+    document.querySelector(".typing-indicator").style.display = "none";
+    shortsBox.style.display = "none";
 }
